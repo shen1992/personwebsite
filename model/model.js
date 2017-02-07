@@ -2,7 +2,7 @@
  * Created by shen on 2017/1/30.
  */
 var mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/test')
+mongoose.connect('mongodb://localhost/PersonWebsite')
 
 const db = mongoose.connection
 db.on('error', console.error.bind(console, '连接错误'))
@@ -10,10 +10,13 @@ db.once('open', function () {
     console.log('连接成功！')
 })
 
-var KittySchema = mongoose.Schema({
-    name: String
+var PersonWebsite = mongoose.Schema({
+    title: String,
+    author: String,
+    content: String,
+    postTime: String
 })
 
-var Kitten = mongoose.model('Kitten', KittySchema)
+var Website = mongoose.model('website', PersonWebsite)
 
-module.exports = Kitten
+module.exports = Website
