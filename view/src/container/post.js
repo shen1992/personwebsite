@@ -10,15 +10,41 @@ import connect from 'utils/connect'
 
 export default class Post extends React.Component {
 
-    componentWillMount() {
-        this.props.actions.fetchList()
+    static contextTypes = {
+        router: React.PropTypes.object
     }
+
+    componentWillMount() {
+        this.props.actions.fetchList(0)
+    }
+
+    goToEitPost = () => {
+        this.props.actions.userLogin()
+            .then(resp => {
+                if(resp.code === '200') {
+                    this.context.router.push('/editpost')
+                } else {
+                    alert('请先登录')
+                    this.context.router.push('/login')
+                }
+            })
+    }
+    goToPreOrNexPage = (num) => {
+        let page = parseInt(this.props.router.location.query.page)
+        let local = this.props.router
+        const pageNum = page + parseInt(num)
+        this.props.actions.fetchList(pageNum).then(() => {
+            local.location.query.page = pageNum
+            local.replace(`/post?page=${pageNum}`)
+        })
+    }
+
     render() {
-        let {list} = this.props
-        if(!list) return null
+        let {postList, pageCount, count} = this.props
+        if(!postList) return null
         return (
             <div>
-                <header><Link to="/editpost">写新文章</Link></header>
+                <header><span onClick={() => this.goToEitPost()} >写新文章</span></header>
                 <ul>
                     {
                         list.map((item, index) => {
@@ -28,6 +54,8 @@ export default class Post extends React.Component {
                         })
                     }
                 </ul>
+                <span onClick={() => this.goToPreOrNexPage(-1)}>上一页</span>
+                <span onClick={() => this.goToPreOrNexPage(1)}>下一页</span>
             </div>)
     }
 }

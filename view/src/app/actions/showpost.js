@@ -6,7 +6,8 @@ import {GET, POST} from 'utils/request'
 
 export function fetchSinglePost (params) {
     return (dispatch, getState) => {
-        return new GET('/singlepost', {...params})
+        let url = `/singlepost?_id=${params}`
+        return new GET(url)
             .send()
             .then((resp) => {
                 dispatch({

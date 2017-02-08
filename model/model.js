@@ -14,7 +14,8 @@ var PersonWebsite = mongoose.Schema({
     title: String,
     author: String,
     content: String,
-    postTime: String
+    postTime: String,
+    type: String,
 })
 
 var Website = mongoose.model('website', PersonWebsite)

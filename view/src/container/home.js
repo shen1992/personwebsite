@@ -20,7 +20,7 @@ export default class App extends React.Component{
     render() {
         return (
             <div>
-                <header><Link to="/post">我的博客</Link><Link to="/login">登录</Link></header>
+                <header><Link to={`/post?page=0`}>我的博客</Link><Link to="/login">登录</Link></header>
             </div>
         )
     }

@@ -13412,7 +13412,7 @@ var App = (_dec = (0, _connect2.default)(_home2.default), _dec(_class = function
                     null,
                     _react2.default.createElement(
                         _reactRouter.Link,
-                        { to: '/post' },
+                        { to: '/post?page=0' },
                         '\u6211\u7684\u535A\u5BA2'
                     ),
                     _react2.default.createElement(
@@ -30365,7 +30365,9 @@ function GET(url) {
 
     this.send = function () {
 
-        return Fetch(url, _extends({ method: 'GET' }, data)).then(function (res) {
+        return Fetch(url, {
+            method: 'GET'
+        }).then(function (res) {
             return res;
         }).catch(function (err) {
             throw err;
@@ -30509,9 +30511,9 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _class; /**
-                   * Created by shen on 2017/2/7.
-                   */
+var _dec, _class, _class2, _temp2; /**
+                                    * Created by shen on 2017/2/7.
+                                    */
 
 
 var _react = __webpack_require__(6);
@@ -30536,26 +30538,56 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = function (_React$Component) {
+var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = (_temp2 = _class2 = function (_React$Component) {
     _inherits(Post, _React$Component);
 
     function Post() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
         _classCallCheck(this, Post);
 
-        return _possibleConstructorReturn(this, (Post.__proto__ || Object.getPrototypeOf(Post)).apply(this, arguments));
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Post.__proto__ || Object.getPrototypeOf(Post)).call.apply(_ref, [this].concat(args))), _this), _this.goToEitPost = function () {
+            _this.props.actions.userLogin().then(function (resp) {
+                if (resp.code === '200') {
+                    _this.context.router.push('/editpost');
+                } else {
+                    alert('请先登录');
+                    _this.context.router.push('/login');
+                }
+            });
+        }, _this.goToPreOrNexPage = function (num) {
+            var page = parseInt(_this.props.router.location.query.page);
+            var local = _this.props.router;
+            var pageNum = page + parseInt(num);
+            _this.props.actions.fetchList(pageNum).then(function () {
+                local.location.query.page = pageNum;
+                local.replace('/post?page=' + pageNum);
+            });
+        }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
     _createClass(Post, [{
         key: 'componentWillMount',
         value: function componentWillMount() {
-            this.props.actions.fetchList();
+            this.props.actions.fetchList(0);
         }
     }, {
         key: 'render',
         value: function render() {
-            var list = this.props.list;
+            var _this2 = this;
 
-            if (!list) return null;
+            var _props = this.props,
+                postList = _props.postList,
+                pageCount = _props.pageCount,
+                count = _props.count;
+
+            if (!postList) return null;
             return _react2.default.createElement(
                 'div',
                 null,
@@ -30563,8 +30595,10 @@ var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = functio
                     'header',
                     null,
                     _react2.default.createElement(
-                        _reactRouter.Link,
-                        { to: '/editpost' },
+                        'span',
+                        { onClick: function onClick() {
+                                return _this2.goToEitPost();
+                            } },
                         '\u5199\u65B0\u6587\u7AE0'
                     )
                 ),
@@ -30593,13 +30627,29 @@ var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = functio
                             )
                         );
                     })
+                ),
+                _react2.default.createElement(
+                    'span',
+                    { onClick: function onClick() {
+                            return _this2.goToPreOrNexPage(-1);
+                        } },
+                    '\u4E0A\u4E00\u9875'
+                ),
+                _react2.default.createElement(
+                    'span',
+                    { onClick: function onClick() {
+                            return _this2.goToPreOrNexPage(1);
+                        } },
+                    '\u4E0B\u4E00\u9875'
                 )
             );
         }
     }]);
 
     return Post;
-}(_react2.default.Component)) || _class);
+}(_react2.default.Component), _class2.contextTypes = {
+    router: _react2.default.PropTypes.object
+}, _temp2)) || _class);
 exports.default = Post;
 
 /***/ }),
@@ -30822,7 +30872,8 @@ var EditPost = (_dec = (0, _connect2.default)(), _dec(_class = (_temp2 = _class2
                 title: title.value,
                 content: content.value,
                 author: 'shen',
-                postTime: y + '\u5E74' + m + '\u6708' + d + '\u65E5'
+                postTime: y + '\u5E74' + m + '\u6708' + d + '\u65E5',
+                type: 'post'
             };
             _this.props.actions.sendPost(params).then(function (resp) {
                 if (resp.code === '200') {
@@ -30914,6 +30965,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.fetchList = fetchList;
+exports.userLogin = userLogin;
 
 var _ActionTypes = __webpack_require__(128);
 
@@ -30926,19 +30978,32 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /**
  * Created by shen on 2017/2/7.
  */
-function receiveList(list) {
+function receiveList(postList, pageCount, count) {
     return {
         type: types.FETCH_LIST,
-        list: list
+        postList: postList,
+        pageCount: pageCount,
+        count: count
+
     };
 }
 
-function fetchList() {
+function fetchList(num) {
     return function (dispatch, getState) {
-        return new _request.GET('/list').send().then(function (resp) {
-            dispatch(receiveList(resp));
+        return new _request.GET('/list?page=' + num).send().then(function (resp) {
+            dispatch(receiveList(resp.postList, resp.pageCount, resp.count));
         }).catch(function (error) {
             return console.log(error);
+        });
+    };
+}
+
+function userLogin() {
+    return function (dispatch, getState) {
+        return new _request.GET('/login').send().then(function (resp) {
+            return resp;
+        }).catch(function (error) {
+            console.log(err);
         });
     };
 }
@@ -30962,7 +31027,9 @@ var types = _interopRequireWildcard(_ActionTypes);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var initialState = {
-    list: []
+    postList: [],
+    count: 0,
+    pageCount: 0
 }; /**
     * Created by shen on 2017/2/7.
     */
@@ -30972,7 +31039,11 @@ function post() {
 
     switch (action.type) {
         case types.FETCH_LIST:
-            return Object.assign({}, state, { list: action.list });
+            return Object.assign({}, state, {
+                postList: action.postList,
+                count: action.count,
+                pageCount: action.pageCount
+            });
         default:
             return state;
     }
@@ -30992,13 +31063,23 @@ Object.defineProperty(exports, "__esModule", {
 var _reselect = __webpack_require__(235);
 
 var getPostList = function getPostList(state) {
-    return state.post.list;
+    return state.post.postList;
 }; /**
     * Created by shen on 2017/2/7.
     */
-exports.default = (0, _reselect.createSelector)(getPostList, function (list) {
+
+var getPostPageCount = function getPostPageCount(state) {
+    return state.post.pageCount;
+};
+var getPostCount = function getPostCount(state) {
+    return state.post.count;
+};
+
+exports.default = (0, _reselect.createSelector)(getPostList, getPostPageCount, getPostCount, function (postList, pageCount, count) {
     return {
-        list: list
+        postList: postList,
+        pageCount: pageCount,
+        count: count
     };
 });
 
@@ -31012,12 +31093,6 @@ exports.default = (0, _reselect.createSelector)(getPostList, function (list) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
-                                                                                                                                                                                                                                                                   * Created by shen on 2017/2/7.
-                                                                                                                                                                                                                                                                   */
-
-
 exports.fetchSinglePost = fetchSinglePost;
 
 var _ActionTypes = __webpack_require__(128);
@@ -31028,9 +31103,13 @@ var _request = __webpack_require__(290);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+/**
+ * Created by shen on 2017/2/7.
+ */
 function fetchSinglePost(params) {
     return function (dispatch, getState) {
-        return new _request.GET('/singlepost', _extends({}, params)).send().then(function (resp) {
+        var url = '/singlepost?_id=' + params;
+        return new _request.GET(url).send().then(function (resp) {
             dispatch({
                 type: types.FETCH_SINGLE_POST,
                 post: resp
@@ -31129,22 +31208,35 @@ var ShowPost = (_dec = (0, _connect2.default)(_showpost2.default), _dec(_class =
         value: function componentWillMount() {
             var post_id = this.props.params.post_id;
 
-            var params = {
-                _id: post_id
-            };
-            this.props.actions.fetchSinglePost(params);
+
+            this.props.actions.fetchSinglePost(post_id);
         }
     }, {
         key: 'render',
         value: function render() {
+            var singlePost = this.props.singlePost;
+
             return _react2.default.createElement(
                 'div',
                 null,
-                _react2.default.createElement('header', null),
+                _react2.default.createElement(
+                    'header',
+                    null,
+                    _react2.default.createElement(
+                        'p',
+                        null,
+                        singlePost.title
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        singlePost.postTime
+                    )
+                ),
                 _react2.default.createElement(
                     'section',
                     null,
-                    'hahahaha'
+                    singlePost.content
                 )
             );
         }

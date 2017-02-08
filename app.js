@@ -4,13 +4,13 @@
 var express = require('express')
 var path = require('path');
 var bodyParser = require('body-parser')
-var sesstion = require('express-session')
+var session = require('express-session')
 var app = express()
 
 app.use(express.static(path.join(__dirname, 'view')));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(sesstion({
+app.use(session({
     secret: 'secret',
     resave: true,
     saveUninitialized:false,
@@ -18,7 +18,6 @@ app.use(sesstion({
         maxAge:1000*60*10 //过期时间设置(单位毫秒)
     }
 }))
-
 var router = require('./router/index')
 app.use(router)
 

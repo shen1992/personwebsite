@@ -4,13 +4,19 @@
 import * as types from '../constants/ActionTypes'
 
 const initialState = {
-    list: [],
+    postList: [],
+    count: 0,
+    pageCount: 0,
 }
 
 export default function post(state = initialState, action) {
     switch (action.type) {
         case types.FETCH_LIST:
-            return Object.assign({}, state, {list: action.list})
+            return Object.assign({}, state, {
+                postList: action.postList,
+                count: action.count,
+                pageCount: action.pageCount
+            })
         default:
             return state
     }

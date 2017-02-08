@@ -24,7 +24,8 @@ export default class EditPost extends React.Component {
             title: title.value,
             content: content.value,
             author: 'shen',
-            postTime: `${y}年${m}月${d}日`
+            postTime: `${y}年${m}月${d}日`,
+            type: 'post',
         }
         this.props.actions.sendPost(params).then(resp => {
             if(resp.code === '200') {

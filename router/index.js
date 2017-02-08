@@ -14,17 +14,30 @@ router.get('/', function (req, res) {
 })
 
 router.get('/list', function (req, res) {
-    Website.find({}, 'title postTime _id', function (err, doc) {
+    Website.count({type: 'post'}, function (err, count) {
+        if(err)console.error(err)
+        let pageCount = Math.ceil(count / 10)
+        let page = req.query.page || 0
+        Website.find({}, 'title postTime _id', {limit: 10, skip: page * 10}, function (err, postList) {
+            if(err) return console.error(err)
+            res.json({count, pageCount, postList,})
+        })
+    })
+})
+
+router.get('/singlepost', function (req, res) {
+    Website.findById(req.query._id, 'title content _id, postTime', function (err, doc) {
         if(err) return console.error(err)
         res.json(doc)
     })
 })
 
-router.get('/singlepost', function (req, res) {
-    Website.findById(req.body._id, 'title content _id, postTime', function (err, doc) {
-        if(err) return console.error(err)
-        res.json(doc)
-    })
+router.get('/login', function (req, res) {
+    if(req.session.user) {
+        res.send({code: '200'})
+    } else {
+        res.send({code: '500', message: '请先登录！'})
+    }
 })
 
 router.post('/login', function (req, res) {
@@ -33,9 +46,10 @@ router.post('/login', function (req, res) {
         password: 'lyg5518263'
     }
     if(req.body.username === user.username && req.body.password === user.password) {
-        res.cookie('shen', {expires: new Date(Date.now() + 900000)})
+        req.session.user = user
         res.send({code: '200'})
     } else {
+        req.session.error = '用户名或密码不正确'
         res.send({code: '404', message: 'no found'})
     }
 })
@@ -46,6 +60,7 @@ router.post('/create', function (req, res) {
         content: req.body.content,
         title: req.body.title,
         postTime: req.body.postTime,
+        type: req.body.type,
     }]
     Website.create(arr, (err, doc) => {
         if(err) return console.log(err)
@@ -58,7 +73,6 @@ router.post('/create', function (req, res) {
 })
 
 router.post('/delete', upload.array(), function (req, res) {
-
     Website.remove({_id: req.body._id}, function (err, doc) {
         if(err) console.error(err)
         if(doc) {

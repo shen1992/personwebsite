@@ -3,13 +3,19 @@
  */
 import {createSelector} from 'reselect'
 
-const getPostList = state => state.post.list
+const getPostList = state => state.post.postList
+const getPostPageCount = state => state.post.pageCount
+const getPostCount = state => state.post.count
 
 export default createSelector(
     getPostList,
-    (list) => {
+    getPostPageCount,
+    getPostCount,
+    (postList, pageCount, count) => {
         return {
-            list,
+            postList,
+            pageCount,
+            count,
         }
     }
 )

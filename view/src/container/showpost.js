@@ -11,16 +11,18 @@ import connect from 'utils/connect'
 export default class ShowPost extends React.Component {
     componentWillMount() {
         let {post_id} = this.props.params
-        const params = {
-            _id: post_id
-        }
-        this.props.actions.fetchSinglePost(params)
+
+        this.props.actions.fetchSinglePost(post_id)
     }
     render() {
+        let {singlePost} = this.props
         return(
             <div>
-                <header></header>
-                <section>hahahaha</section>
+                <header>
+                    <p>{singlePost.title}</p>
+                    <span>{singlePost.postTime}</span>
+                </header>
+                <section>{singlePost.content}</section>
             </div>
         )
     }
