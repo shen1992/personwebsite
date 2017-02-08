@@ -20,6 +20,13 @@ router.get('/list', function (req, res) {
     })
 })
 
+router.get('/singlepost', function (req, res) {
+    Website.findById(req.body._id, 'title content _id, postTime', function (err, doc) {
+        if(err) return console.error(err)
+        res.json(doc)
+    })
+})
+
 router.post('/login', function (req, res) {
     var user = {
         username: 'shen',

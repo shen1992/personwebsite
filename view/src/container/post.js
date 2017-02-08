@@ -14,9 +14,7 @@ export default class Post extends React.Component {
         this.props.actions.fetchList()
     }
     render() {
-        console.log('post', this.props.list)
         let {list} = this.props
-        console.log('list', list)
         if(!list) return null
         return (
             <div>
@@ -25,7 +23,7 @@ export default class Post extends React.Component {
                     {
                         list.map((item, index) => {
                             return (
-                                <li key={item._id}><p>{item.title}</p><span>{item.postTime}</span></li>
+                                <li key={item._id}><Link to={`/showpost/${item._id}`}><p>{item.title}</p><span>({item.postTime})</span></Link></li>
                             )
                         })
                     }

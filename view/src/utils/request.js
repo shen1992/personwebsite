@@ -9,10 +9,10 @@ function Fetch(url, options) {
 
 }
 
-function GET(url) {
+function GET(url, data = {}) {
     this.send = () => {
 
-        return Fetch(url, {method: 'GET'})
+        return Fetch(url, {method: 'GET', ...data})
             .then((res) => res)
             .catch((err) => {throw err})
     }

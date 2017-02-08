@@ -13200,6 +13200,7 @@ Object.defineProperty(exports, "__esModule", {
 var FETCH_LIST = exports.FETCH_LIST = 'FETCH_LIST';
 var SEND_COMMENT = exports.SEND_COMMENT = 'SEND_COMMENT';
 var DELETE_COMMENT = exports.DELETE_COMMENT = 'DELETE_COMMENT';
+var FETCH_SINGLE_POST = exports.FETCH_SINGLE_POST = 'FETCH_SINGLE_POST';
 
 /***/ }),
 /* 129 */
@@ -30134,6 +30135,18 @@ Object.keys(_post).forEach(function (key) {
   });
 });
 
+var _showpost = __webpack_require__(301);
+
+Object.keys(_showpost).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _showpost[key];
+    }
+  });
+});
+
 /***/ }),
 /* 286 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -30198,17 +30211,20 @@ var _post = __webpack_require__(299);
 
 var _post2 = _interopRequireDefault(_post);
 
+var _showpost = __webpack_require__(302);
+
+var _showpost2 = _interopRequireDefault(_showpost);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Created by shen on 2017/2/4.
- */
 var rootReducer = (0, _redux.combineReducers)({
     home: _home2.default,
     post: _post2.default,
+    showpost: _showpost2.default,
     routing: _reactRouterRedux.routerReducer
-});
-
+}); /**
+     * Created by shen on 2017/2/4.
+     */
 exports.default = rootReducer;
 
 /***/ }),
@@ -30345,9 +30361,11 @@ function Fetch(url, options) {
 }
 
 function GET(url) {
+    var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
     this.send = function () {
 
-        return Fetch(url, { method: 'GET' }).then(function (res) {
+        return Fetch(url, _extends({ method: 'GET' }, data)).then(function (res) {
             return res;
         }).catch(function (err) {
             throw err;
@@ -30446,11 +30464,12 @@ var _editpost = __webpack_require__(296);
 
 var _editpost2 = _interopRequireDefault(_editpost);
 
+var _showpost = __webpack_require__(303);
+
+var _showpost2 = _interopRequireDefault(_showpost);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Created by shen on 2017/2/3.
- */
 var routes = function routes(history) {
     return _react2.default.createElement(
         _reactRouter.Router,
@@ -30459,9 +30478,13 @@ var routes = function routes(history) {
         _react2.default.createElement(_reactRouter.Route, { path: '/post', component: _post2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: '/login', component: _login2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: '/editpost', component: _editpost2.default }),
+        _react2.default.createElement(_reactRouter.Route, { path: '/showpost/:post_id', component: _showpost2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: '*', component: _home2.default })
     );
-};
+}; /**
+    * Created by shen on 2017/2/3.
+    */
+
 
 var store = (0, _configureStore2.default)(_reactRouter.browserHistory);
 var history = (0, _reactRouterRedux.syncHistoryWithStore)(_reactRouter.browserHistory, store);
@@ -30530,10 +30553,8 @@ var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = functio
     }, {
         key: 'render',
         value: function render() {
-            console.log('post', this.props.list);
             var list = this.props.list;
 
-            console.log('list', list);
             if (!list) return null;
             return _react2.default.createElement(
                 'div',
@@ -30555,14 +30576,20 @@ var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = functio
                             'li',
                             { key: item._id },
                             _react2.default.createElement(
-                                'p',
-                                null,
-                                item.title
-                            ),
-                            _react2.default.createElement(
-                                'span',
-                                null,
-                                item.postTime
+                                _reactRouter.Link,
+                                { to: '/showpost/' + item._id },
+                                _react2.default.createElement(
+                                    'p',
+                                    null,
+                                    item.title
+                                ),
+                                _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    '(',
+                                    item.postTime,
+                                    ')'
+                                )
                             )
                         );
                     })
@@ -30926,7 +30953,7 @@ function fetchList() {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.default = home;
+exports.default = post;
 
 var _ActionTypes = __webpack_require__(128);
 
@@ -30939,7 +30966,7 @@ var initialState = {
 }; /**
     * Created by shen on 2017/2/7.
     */
-function home() {
+function post() {
     var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
     var action = arguments[1];
 
@@ -30964,14 +30991,190 @@ Object.defineProperty(exports, "__esModule", {
 
 var _reselect = __webpack_require__(235);
 
-var getHomeList = function getHomeList(state) {
-    return state.home.list;
+var getPostList = function getPostList(state) {
+    return state.post.list;
 }; /**
     * Created by shen on 2017/2/7.
     */
-exports.default = (0, _reselect.createSelector)(getHomeList, function (list) {
+exports.default = (0, _reselect.createSelector)(getPostList, function (list) {
     return {
         list: list
+    };
+});
+
+/***/ }),
+/* 301 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
+                                                                                                                                                                                                                                                                   * Created by shen on 2017/2/7.
+                                                                                                                                                                                                                                                                   */
+
+
+exports.fetchSinglePost = fetchSinglePost;
+
+var _ActionTypes = __webpack_require__(128);
+
+var types = _interopRequireWildcard(_ActionTypes);
+
+var _request = __webpack_require__(290);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function fetchSinglePost(params) {
+    return function (dispatch, getState) {
+        return new _request.GET('/singlepost', _extends({}, params)).send().then(function (resp) {
+            dispatch({
+                type: types.FETCH_SINGLE_POST,
+                post: resp
+            });
+        });
+    };
+}
+
+/***/ }),
+/* 302 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = showpost;
+
+var _ActionTypes = __webpack_require__(128);
+
+var types = _interopRequireWildcard(_ActionTypes);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var initialState = {
+    singlePost: []
+}; /**
+    * Created by shen on 2017/2/7.
+    */
+function showpost() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+    var action = arguments[1];
+
+    switch (action.type) {
+        case types.FETCH_SINGLE_POST:
+            return Object.assign({}, state, { singlePost: action.post });
+        default:
+            return state;
+    }
+}
+
+/***/ }),
+/* 303 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _dec, _class; /**
+                   * Created by shen on 2017/2/7.
+                   */
+
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouter = __webpack_require__(130);
+
+var _showpost = __webpack_require__(304);
+
+var _showpost2 = _interopRequireDefault(_showpost);
+
+var _connect = __webpack_require__(289);
+
+var _connect2 = _interopRequireDefault(_connect);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ShowPost = (_dec = (0, _connect2.default)(_showpost2.default), _dec(_class = function (_React$Component) {
+    _inherits(ShowPost, _React$Component);
+
+    function ShowPost() {
+        _classCallCheck(this, ShowPost);
+
+        return _possibleConstructorReturn(this, (ShowPost.__proto__ || Object.getPrototypeOf(ShowPost)).apply(this, arguments));
+    }
+
+    _createClass(ShowPost, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            var post_id = this.props.params.post_id;
+
+            var params = {
+                _id: post_id
+            };
+            this.props.actions.fetchSinglePost(params);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('header', null),
+                _react2.default.createElement(
+                    'section',
+                    null,
+                    'hahahaha'
+                )
+            );
+        }
+    }]);
+
+    return ShowPost;
+}(_react2.default.Component)) || _class);
+exports.default = ShowPost;
+
+/***/ }),
+/* 304 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _reselect = __webpack_require__(235);
+
+var getSinglePost = function getSinglePost(state) {
+    return state.showpost.singlePost;
+}; /**
+    * Created by shen on 2017/2/7.
+    */
+exports.default = (0, _reselect.createSelector)(getSinglePost, function (singlePost) {
+    return {
+        singlePost: singlePost
     };
 });
 

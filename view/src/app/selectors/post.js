@@ -3,10 +3,10 @@
  */
 import {createSelector} from 'reselect'
 
-const getHomeList = state => state.home.list
+const getPostList = state => state.post.list
 
 export default createSelector(
-    getHomeList,
+    getPostList,
     (list) => {
         return {
             list,
