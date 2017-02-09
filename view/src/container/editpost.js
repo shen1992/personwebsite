@@ -3,14 +3,26 @@
  */
 import React from 'react'
 import connect from 'utils/connect'
-@connect()
+import editSelect from 'app/selectors/editpost'
+@connect(editSelect)
 export default class EditPost extends React.Component {
 
     static contextTypes = {
         router: React.PropTypes.object
     }
 
-    sendPost = () => {
+    componentDidMount() {
+        const query = this.context.router.location.query.postId
+        if(!query)return
+        this.props.actions.fetchNaturePost(query).then(() => {
+            let {naturePost} = this.props
+            let {title, content} = this.refs
+            title.value = naturePost.title
+            content.value = naturePost.content
+        })
+    }
+
+    commonPost = () => {
         let {title, content} = this.refs
         if(!title.value || !content.value) {
             alert('请输入完整信息')
@@ -20,13 +32,18 @@ export default class EditPost extends React.Component {
         let y = date.getFullYear()
         let m = date.getMonth() + 1
         let d = date.getDate()
-        const params = {
+
+        return {
             title: title.value,
             content: content.value,
             author: 'shen',
             postTime: `${y}年${m}月${d}日`,
             type: 'post',
         }
+    }
+
+    sendPost = () => {
+        const params = this.commonPost()
         this.props.actions.sendPost(params).then(resp => {
             if(resp.code === '200') {
                 this.context.router.goBack()
@@ -34,12 +51,29 @@ export default class EditPost extends React.Component {
         })
     }
 
+    editPost = (_id) => {
+        const params = this.commonPost()
+        Object.assign(params, {_id})
+        this.props.actions.editPost(params).then((resp) => {
+            if(resp.code === '200') {
+                this.context.router.goBack()
+            }
+        })
+
+    }
+
     render() {
+        let {naturePost} = this.props
+
         return (
             <div>
-                <header><input type="text" placeholder="文章标题"  ref="title" /><span onClick={() => this.sendPost()}>发表文章</span></header>
+                <header>
+                    <input type="text" placeholder="文章标题"  ref="title" />
+                    {naturePost._id ? <span onClick={() => this.editPost(naturePost._id )}>编辑文章</span> : <span onClick={() => this.sendPost()}>发表文章</span>}
+                    </header>
                 <section>
-                    <textarea name="" id="" cols="30" rows="10" ref="content" ></textarea>
+                    <textarea name="" id="" cols="30" rows="10" ref="content" >
+                    </textarea>
                 </section>
             </div>
         )

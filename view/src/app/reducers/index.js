@@ -6,11 +6,13 @@ import {routerReducer} from 'react-router-redux'
 import home from './home'
 import post from './post'
 import showpost from './showpost'
+import editPost from './editpost'
 
 const rootReducer = combineReducers({
     home,
     post,
     showpost,
+    editPost,
     routing: routerReducer
 })
 

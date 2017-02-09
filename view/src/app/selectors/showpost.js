@@ -4,12 +4,16 @@
 import {createSelector} from 'reselect'
 
 const getSinglePost = state => state.showpost.singlePost
+const getUserComment = state => state.showpost.userComment
+
 
 export default createSelector(
     getSinglePost,
-    (singlePost) => {
+    getUserComment,
+    (singlePost, userComment) => {
         return {
             singlePost,
+            userComment,
         }
     }
 )

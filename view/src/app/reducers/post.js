@@ -6,7 +6,8 @@ import * as types from '../constants/ActionTypes'
 const initialState = {
     postList: [],
     count: 0,
-    pageCount: 0,
+    pageArr: [],
+    assignPost: [],
 }
 
 export default function post(state = initialState, action) {
@@ -15,8 +16,10 @@ export default function post(state = initialState, action) {
             return Object.assign({}, state, {
                 postList: action.postList,
                 count: action.count,
-                pageCount: action.pageCount
+                pageArr: action.pageArr
             })
+        case types.FIND_ASSIGN_POST:
+            return Object.assign({}, state, {assignPost: action.assignPost})
         default:
             return state
     }

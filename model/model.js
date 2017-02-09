@@ -16,6 +16,9 @@ var PersonWebsite = mongoose.Schema({
     content: String,
     postTime: String,
     type: String,
+    commentName: String,
+    commentContent: String,
+    commentTime: String,
 })
 
 var Website = mongoose.model('website', PersonWebsite)

@@ -15,12 +15,28 @@ export default class App extends React.Component{
 
     constructor(args) {
         super(...args)
+        this.state = {
+            isLogin: false
+        }
+    }
+
+    componentWillMount() {
+        this.props.actions.userLogin()
+            .then(resp => {
+                if(resp.code === '200') {
+                    this.setState({
+                        isLogin: true
+                    })
+                }
+            })
     }
 
     render() {
         return (
             <div>
-                <header><Link to={`/post?page=0`}>我的博客</Link><Link to="/login">登录</Link></header>
+                <header><Link to={`/post?page=0`}>我的博客</Link>
+                    <Link to="/login"><span>{ this.state.isLogin ? '已登录' : '登录' }</span></Link>
+                </header>
             </div>
         )
     }

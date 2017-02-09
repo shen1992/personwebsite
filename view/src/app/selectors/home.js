@@ -13,25 +13,6 @@ export default createSelector(
     getDeleteCommentId,
     (list, userComment, deleteId) => {
 
-        if(userComment._id) {
-            list.push(userComment)
-            console.log('list', list)
-            return {
-                list
-            }
-        }
-
-        if(deleteId) {
-            list.map((item, index) =>  {
-                if(item._id === deleteId) {
-                    list.splice(index, 1)
-                }
-            })
-            return {
-                list
-            }
-        }
-
         return {
             list,
             userComment

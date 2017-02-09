@@ -13197,10 +13197,17 @@ Object.defineProperty(exports, "__esModule", {
 /**
  * Created by shen on 2017/2/4.
  */
+//post
 var FETCH_LIST = exports.FETCH_LIST = 'FETCH_LIST';
-var SEND_COMMENT = exports.SEND_COMMENT = 'SEND_COMMENT';
-var DELETE_COMMENT = exports.DELETE_COMMENT = 'DELETE_COMMENT';
+var FIND_ASSIGN_POST = exports.FIND_ASSIGN_POST = 'FIND_ASSIGN_POST';
+
+//showpost
 var FETCH_SINGLE_POST = exports.FETCH_SINGLE_POST = 'FETCH_SINGLE_POST';
+var FETCH_USER_COMMENT = exports.FETCH_USER_COMMENT = 'FETCH_USER_COMMENT';
+var SEND_COMMENT = exports.SEND_COMMENT = 'SEND_COMMENT';
+
+//editpost
+var FETCH_NATURE_POST = exports.FETCH_NATURE_POST = 'FETCH_NATURE_POST';
 
 /***/ }),
 /* 129 */
@@ -13398,10 +13405,28 @@ var App = (_dec = (0, _connect2.default)(_home2.default), _dec(_class = function
 
         _classCallCheck(this, App);
 
-        return _possibleConstructorReturn(this, (_ref = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref, [this].concat(_toConsumableArray(args))));
+        var _this = _possibleConstructorReturn(this, (_ref = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref, [this].concat(_toConsumableArray(args))));
+
+        _this.state = {
+            isLogin: false
+        };
+        return _this;
     }
 
     _createClass(App, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            var _this2 = this;
+
+            this.props.actions.userLogin().then(function (resp) {
+                if (resp.code === '200') {
+                    _this2.setState({
+                        isLogin: true
+                    });
+                }
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
@@ -13418,7 +13443,11 @@ var App = (_dec = (0, _connect2.default)(_home2.default), _dec(_class = function
                     _react2.default.createElement(
                         _reactRouter.Link,
                         { to: '/login' },
-                        '\u767B\u5F55'
+                        _react2.default.createElement(
+                            'span',
+                            null,
+                            this.state.isLogin ? '已登录' : '登录'
+                        )
                     )
                 )
             );
@@ -30049,11 +30078,6 @@ function shallowEqual(a, b) {
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.deleteComment = deleteComment;
-
 var _ActionTypes = __webpack_require__(128);
 
 var types = _interopRequireWildcard(_ActionTypes);
@@ -30061,20 +30085,6 @@ var types = _interopRequireWildcard(_ActionTypes);
 var _request = __webpack_require__(290);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-/**
- * Created by shen on 2017/2/4.
- */
-function deleteComment(id) {
-    return function (dispatch, getState) {
-        return new _request.POST('/delete', { _id: id }).send().then(function (resp) {
-            dispatch({
-                type: types.DELETE_COMMENT,
-                _id: id
-            });
-        });
-    };
-}
 
 /***/ }),
 /* 285 */
@@ -30165,24 +30175,14 @@ var types = _interopRequireWildcard(_ActionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var initialState = {
-    list: [],
-    userComment: {},
-    deleteId: ''
-}; /**
-    * Created by shen on 2017/2/4.
-    */
+var initialState = {}; /**
+                        * Created by shen on 2017/2/4.
+                        */
 function home() {
     var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
     var action = arguments[1];
 
     switch (action.type) {
-        case types.FETCH_LIST:
-            return Object.assign({}, state, { list: action.list });
-        case types.SEND_COMMENT:
-            return Object.assign({}, state, { userComment: action.userComment });
-        case types.DELETE_COMMENT:
-            return Object.assign({}, state, { deleteId: action._id });
         default:
             return state;
     }
@@ -30215,16 +30215,23 @@ var _showpost = __webpack_require__(302);
 
 var _showpost2 = _interopRequireDefault(_showpost);
 
+var _editpost = __webpack_require__(305);
+
+var _editpost2 = _interopRequireDefault(_editpost);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Created by shen on 2017/2/4.
+ */
 var rootReducer = (0, _redux.combineReducers)({
     home: _home2.default,
     post: _post2.default,
     showpost: _showpost2.default,
+    editPost: _editpost2.default,
     routing: _reactRouterRedux.routerReducer
-}); /**
-     * Created by shen on 2017/2/4.
-     */
+});
+
 exports.default = rootReducer;
 
 /***/ }),
@@ -30254,25 +30261,6 @@ var getDeleteCommentId = function getDeleteCommentId(state) {
 };
 
 exports.default = (0, _reselect.createSelector)(getHomeList, getUserComment, getDeleteCommentId, function (list, userComment, deleteId) {
-
-    if (userComment._id) {
-        list.push(userComment);
-        console.log('list', list);
-        return {
-            list: list
-        };
-    }
-
-    if (deleteId) {
-        list.map(function (item, index) {
-            if (item._id === deleteId) {
-                list.splice(index, 1);
-            }
-        });
-        return {
-            list: list
-        };
-    }
 
     return {
         list: list,
@@ -30511,9 +30499,9 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _class, _class2, _temp2; /**
-                                    * Created by shen on 2017/2/7.
-                                    */
+var _dec, _class, _class2, _temp; /**
+                                   * Created by shen on 2017/2/7.
+                                   */
 
 
 var _react = __webpack_require__(6);
@@ -30532,27 +30520,25 @@ var _connect2 = _interopRequireDefault(_connect);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = (_temp2 = _class2 = function (_React$Component) {
+var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = (_temp = _class2 = function (_React$Component) {
     _inherits(Post, _React$Component);
 
-    function Post() {
+    function Post(args) {
         var _ref;
-
-        var _temp, _this, _ret;
 
         _classCallCheck(this, Post);
 
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-        }
+        var _this = _possibleConstructorReturn(this, (_ref = Post.__proto__ || Object.getPrototypeOf(Post)).call.apply(_ref, [this].concat(_toConsumableArray(args))));
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Post.__proto__ || Object.getPrototypeOf(Post)).call.apply(_ref, [this].concat(args))), _this), _this.goToEitPost = function () {
+        _this.goToEitPost = function () {
             _this.props.actions.userLogin().then(function (resp) {
                 if (resp.code === '200') {
                     _this.context.router.push('/editpost');
@@ -30561,31 +30547,72 @@ var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = (_temp2
                     _this.context.router.push('/login');
                 }
             });
-        }, _this.goToPreOrNexPage = function (num) {
+        };
+
+        _this.goToPreOrNexPage = function (num) {
             var page = parseInt(_this.props.router.location.query.page);
             var local = _this.props.router;
             var pageNum = page + parseInt(num);
+            if (pageNum > _this.props.pageArr.length - 1 || pageNum < 0) return;
             _this.props.actions.fetchList(pageNum).then(function () {
                 local.location.query.page = pageNum;
                 local.replace('/post?page=' + pageNum);
             });
-        }, _temp), _possibleConstructorReturn(_this, _ret);
+        };
+
+        _this.goToAssignPage = function (num) {
+            _this.props.actions.fetchList(num).then(function () {
+                var local = _this.props.router;
+                local.location.query.page = num;
+                local.replace('/post?page=' + num);
+            });
+        };
+
+        _this.deletePost = function (_id) {
+            _this.props.actions.deletePost(_id).then(function (resp) {
+                _this.state.postList.map(function (item, index) {
+                    if (item._id === _id) {
+                        _this.state.postList.splice(index, 1);
+                        _this.setState({
+                            postList: _this.state.postList
+                        });
+                    }
+                });
+            });
+        };
+
+        _this.findAssignPost = function () {
+            var postTitle = _this.refs.postTitle;
+
+            _this.props.actions.findAssignPost(postTitle.value);
+        };
+
+        _this.state = {
+            postList: []
+        };
+        return _this;
     }
 
     _createClass(Post, [{
         key: 'componentWillMount',
         value: function componentWillMount() {
-            this.props.actions.fetchList(0);
+            var _this2 = this;
+
+            this.props.actions.fetchList(0).then(function () {
+                _this2.setState({
+                    postList: _this2.props.postList
+                });
+            });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _this3 = this;
 
             var _props = this.props,
-                postList = _props.postList,
-                pageCount = _props.pageCount,
-                count = _props.count;
+                pageArr = _props.pageArr,
+                assignPost = _props.assignPost;
+            var postList = this.state.postList;
 
             if (!postList) return null;
             return _react2.default.createElement(
@@ -30597,15 +30624,46 @@ var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = (_temp2
                     _react2.default.createElement(
                         'span',
                         { onClick: function onClick() {
-                                return _this2.goToEitPost();
+                                return _this3.goToEitPost();
                             } },
                         '\u5199\u65B0\u6587\u7AE0'
-                    )
+                    ),
+                    _react2.default.createElement('input', { type: 'text', placeholder: '\u8BF7\u8F93\u5165\u6587\u7AE0\u7684\u6807\u9898', ref: 'postTitle' }),
+                    _react2.default.createElement(
+                        'button',
+                        { onClick: function onClick() {
+                                return _this3.findAssignPost();
+                            } },
+                        '\u63D0\u4EA4'
+                    ),
+                    assignPost.length ? _react2.default.createElement(
+                        'p',
+                        null,
+                        '\u67E5\u8BE2\u7ED3\u679C'
+                    ) : null,
+                    assignPost.map(function (item) {
+                        return _react2.default.createElement(
+                            _reactRouter.Link,
+                            { to: '/showpost/' + item._id, key: item._id },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                item.title
+                            ),
+                            _react2.default.createElement(
+                                'span',
+                                null,
+                                '(',
+                                item.postTime,
+                                ')'
+                            )
+                        );
+                    })
                 ),
                 _react2.default.createElement(
                     'ul',
                     null,
-                    list.map(function (item, index) {
+                    postList.map(function (item, index) {
                         return _react2.default.createElement(
                             'li',
                             { key: item._id },
@@ -30624,6 +30682,18 @@ var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = (_temp2
                                     item.postTime,
                                     ')'
                                 )
+                            ),
+                            _react2.default.createElement(
+                                _reactRouter.Link,
+                                { to: '/editpost?postId=' + item._id },
+                                '\u7F16\u8F91'
+                            ),
+                            _react2.default.createElement(
+                                'span',
+                                { onClick: function onClick() {
+                                        return _this3.deletePost(item._id);
+                                    } },
+                                '\u5220\u9664'
                             )
                         );
                     })
@@ -30631,14 +30701,27 @@ var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = (_temp2
                 _react2.default.createElement(
                     'span',
                     { onClick: function onClick() {
-                            return _this2.goToPreOrNexPage(-1);
+                            return _this3.goToPreOrNexPage(-1);
                         } },
                     '\u4E0A\u4E00\u9875'
                 ),
                 _react2.default.createElement(
+                    'ul',
+                    null,
+                    pageArr.map(function (item, index) {
+                        return _react2.default.createElement(
+                            'li',
+                            { key: index, onClick: function onClick() {
+                                    return _this3.goToAssignPage(index);
+                                } },
+                            index + 1
+                        );
+                    })
+                ),
+                _react2.default.createElement(
                     'span',
                     { onClick: function onClick() {
-                            return _this2.goToPreOrNexPage(1);
+                            return _this3.goToPreOrNexPage(1);
                         } },
                     '\u4E0B\u4E00\u9875'
                 )
@@ -30649,7 +30732,7 @@ var Post = (_dec = (0, _connect2.default)(_post2.default), _dec(_class = (_temp2
     return Post;
 }(_react2.default.Component), _class2.contextTypes = {
     router: _react2.default.PropTypes.object
-}, _temp2)) || _class);
+}, _temp)) || _class);
 exports.default = Post;
 
 /***/ }),
@@ -30833,6 +30916,10 @@ var _connect = __webpack_require__(289);
 
 var _connect2 = _interopRequireDefault(_connect);
 
+var _editpost = __webpack_require__(306);
+
+var _editpost2 = _interopRequireDefault(_editpost);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -30841,7 +30928,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var EditPost = (_dec = (0, _connect2.default)(), _dec(_class = (_temp2 = _class2 = function (_React$Component) {
+var EditPost = (_dec = (0, _connect2.default)(_editpost2.default), _dec(_class = (_temp2 = _class2 = function (_React$Component) {
     _inherits(EditPost, _React$Component);
 
     function EditPost() {
@@ -30855,7 +30942,7 @@ var EditPost = (_dec = (0, _connect2.default)(), _dec(_class = (_temp2 = _class2
             args[_key] = arguments[_key];
         }
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = EditPost.__proto__ || Object.getPrototypeOf(EditPost)).call.apply(_ref, [this].concat(args))), _this), _this.sendPost = function () {
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = EditPost.__proto__ || Object.getPrototypeOf(EditPost)).call.apply(_ref, [this].concat(args))), _this), _this.commonPost = function () {
             var _this$refs = _this.refs,
                 title = _this$refs.title,
                 content = _this$refs.content;
@@ -30868,14 +30955,25 @@ var EditPost = (_dec = (0, _connect2.default)(), _dec(_class = (_temp2 = _class2
             var y = date.getFullYear();
             var m = date.getMonth() + 1;
             var d = date.getDate();
-            var params = {
+
+            return {
                 title: title.value,
                 content: content.value,
                 author: 'shen',
                 postTime: y + '\u5E74' + m + '\u6708' + d + '\u65E5',
                 type: 'post'
             };
+        }, _this.sendPost = function () {
+            var params = _this.commonPost();
             _this.props.actions.sendPost(params).then(function (resp) {
+                if (resp.code === '200') {
+                    _this.context.router.goBack();
+                }
+            });
+        }, _this.editPost = function (_id) {
+            var params = _this.commonPost();
+            Object.assign(params, { _id: _id });
+            _this.props.actions.editPost(params).then(function (resp) {
                 if (resp.code === '200') {
                     _this.context.router.goBack();
                 }
@@ -30884,9 +30982,29 @@ var EditPost = (_dec = (0, _connect2.default)(), _dec(_class = (_temp2 = _class2
     }
 
     _createClass(EditPost, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var _this2 = this;
+
+            var query = this.context.router.location.query.postId;
+            if (!query) return;
+            this.props.actions.fetchNaturePost(query).then(function () {
+                var naturePost = _this2.props.naturePost;
+                var _refs = _this2.refs,
+                    title = _refs.title,
+                    content = _refs.content;
+
+                title.value = naturePost.title;
+                content.value = naturePost.content;
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _this3 = this;
+
+            var naturePost = this.props.naturePost;
+
 
             return _react2.default.createElement(
                 'div',
@@ -30895,10 +31013,16 @@ var EditPost = (_dec = (0, _connect2.default)(), _dec(_class = (_temp2 = _class2
                     'header',
                     null,
                     _react2.default.createElement('input', { type: 'text', placeholder: '\u6587\u7AE0\u6807\u9898', ref: 'title' }),
-                    _react2.default.createElement(
+                    naturePost._id ? _react2.default.createElement(
                         'span',
                         { onClick: function onClick() {
-                                return _this2.sendPost();
+                                return _this3.editPost(naturePost._id);
+                            } },
+                        '\u7F16\u8F91\u6587\u7AE0'
+                    ) : _react2.default.createElement(
+                        'span',
+                        { onClick: function onClick() {
+                                return _this3.sendPost();
                             } },
                         '\u53D1\u8868\u6587\u7AE0'
                     )
@@ -30935,6 +31059,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 exports.sendPost = sendPost;
+exports.fetchNaturePost = fetchNaturePost;
+exports.editPost = editPost;
 
 var _ActionTypes = __webpack_require__(128);
 
@@ -30954,6 +31080,25 @@ function sendPost(option) {
     };
 }
 
+function fetchNaturePost(_id) {
+    return function (dispatch, getState) {
+        return new _request.GET('/naturePost?_id=' + _id).send().then(function (resp) {
+            dispatch({
+                type: types.FETCH_NATURE_POST,
+                naturePost: resp
+            });
+        });
+    };
+}
+
+function editPost(params) {
+    return function (dispatch, getState) {
+        return new _request.POST('/updatePost', _extends({}, params)).send().catch(function (err) {
+            throw err;
+        });
+    };
+}
+
 /***/ }),
 /* 298 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -30966,6 +31111,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.fetchList = fetchList;
 exports.userLogin = userLogin;
+exports.deletePost = deletePost;
+exports.findAssignPost = findAssignPost;
 
 var _ActionTypes = __webpack_require__(128);
 
@@ -30978,11 +31125,11 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /**
  * Created by shen on 2017/2/7.
  */
-function receiveList(postList, pageCount, count) {
+function receiveList(postList, pageArr, count) {
     return {
         type: types.FETCH_LIST,
         postList: postList,
-        pageCount: pageCount,
+        pageArr: pageArr,
         count: count
 
     };
@@ -30991,7 +31138,7 @@ function receiveList(postList, pageCount, count) {
 function fetchList(num) {
     return function (dispatch, getState) {
         return new _request.GET('/list?page=' + num).send().then(function (resp) {
-            dispatch(receiveList(resp.postList, resp.pageCount, resp.count));
+            dispatch(receiveList(resp.postList, resp.pageArr, resp.count));
         }).catch(function (error) {
             return console.log(error);
         });
@@ -31004,6 +31151,25 @@ function userLogin() {
             return resp;
         }).catch(function (error) {
             console.log(err);
+        });
+    };
+}
+
+function deletePost(id) {
+    return function (dispatch, getState) {
+        return new _request.POST('/delete', { _id: id }).send().then(function (resp) {
+            return resp;
+        });
+    };
+}
+
+function findAssignPost(title) {
+    return function (dispatch, getState) {
+        return new _request.GET('/findPost?title=' + title).send().then(function (resp) {
+            dispatch({
+                type: types.FIND_ASSIGN_POST,
+                assignPost: resp
+            });
         });
     };
 }
@@ -31029,7 +31195,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 var initialState = {
     postList: [],
     count: 0,
-    pageCount: 0
+    pageArr: [],
+    assignPost: []
 }; /**
     * Created by shen on 2017/2/7.
     */
@@ -31042,8 +31209,10 @@ function post() {
             return Object.assign({}, state, {
                 postList: action.postList,
                 count: action.count,
-                pageCount: action.pageCount
+                pageArr: action.pageArr
             });
+        case types.FIND_ASSIGN_POST:
+            return Object.assign({}, state, { assignPost: action.assignPost });
         default:
             return state;
     }
@@ -31069,17 +31238,21 @@ var getPostList = function getPostList(state) {
     */
 
 var getPostPageCount = function getPostPageCount(state) {
-    return state.post.pageCount;
+    return state.post.pageArr;
 };
 var getPostCount = function getPostCount(state) {
     return state.post.count;
 };
+var getAssignPost = function getAssignPost(state) {
+    return state.post.assignPost;
+};
 
-exports.default = (0, _reselect.createSelector)(getPostList, getPostPageCount, getPostCount, function (postList, pageCount, count) {
+exports.default = (0, _reselect.createSelector)(getPostList, getPostPageCount, getPostCount, getAssignPost, function (postList, pageArr, count, assignPost) {
     return {
         postList: postList,
-        pageCount: pageCount,
-        count: count
+        pageArr: pageArr,
+        count: count,
+        assignPost: assignPost
     };
 });
 
@@ -31093,7 +31266,15 @@ exports.default = (0, _reselect.createSelector)(getPostList, getPostPageCount, g
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
+                                                                                                                                                                                                                                                                   * Created by shen on 2017/2/7.
+                                                                                                                                                                                                                                                                   */
+
+
 exports.fetchSinglePost = fetchSinglePost;
+exports.userSendComment = userSendComment;
+exports.fetchUserComment = fetchUserComment;
 
 var _ActionTypes = __webpack_require__(128);
 
@@ -31103,9 +31284,6 @@ var _request = __webpack_require__(290);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-/**
- * Created by shen on 2017/2/7.
- */
 function fetchSinglePost(params) {
     return function (dispatch, getState) {
         var url = '/singlepost?_id=' + params;
@@ -31114,6 +31292,29 @@ function fetchSinglePost(params) {
                 type: types.FETCH_SINGLE_POST,
                 post: resp
             });
+        });
+    };
+}
+
+function userSendComment(params) {
+    return function (dispatch, getState) {
+        return new _request.POST('/userComment', _extends({}, params)).send().then(function (resp) {
+            return resp;
+        }).catch(function (err) {
+            throw err;
+        });
+    };
+}
+
+function fetchUserComment(_id) {
+    return function (dispatch, getState) {
+        return new _request.GET('/userComment?_id=' + _id).send().then(function (resp) {
+            dispatch({
+                type: types.FETCH_USER_COMMENT,
+                userComment: resp
+            });
+        }).catch(function (err) {
+            throw err;
         });
     };
 }
@@ -31137,7 +31338,8 @@ var types = _interopRequireWildcard(_ActionTypes);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var initialState = {
-    singlePost: []
+    singlePost: [],
+    userComment: []
 }; /**
     * Created by shen on 2017/2/7.
     */
@@ -31148,6 +31350,8 @@ function showpost() {
     switch (action.type) {
         case types.FETCH_SINGLE_POST:
             return Object.assign({}, state, { singlePost: action.post });
+        case types.FETCH_USER_COMMENT:
+            return Object.assign({}, state, { userComment: action.userComment });
         default:
             return state;
     }
@@ -31188,6 +31392,8 @@ var _connect2 = _interopRequireDefault(_connect);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -31197,24 +31403,64 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ShowPost = (_dec = (0, _connect2.default)(_showpost2.default), _dec(_class = function (_React$Component) {
     _inherits(ShowPost, _React$Component);
 
-    function ShowPost() {
+    function ShowPost(args) {
+        var _ref;
+
         _classCallCheck(this, ShowPost);
 
-        return _possibleConstructorReturn(this, (ShowPost.__proto__ || Object.getPrototypeOf(ShowPost)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (_ref = ShowPost.__proto__ || Object.getPrototypeOf(ShowPost)).call.apply(_ref, [this].concat(_toConsumableArray(args))));
+
+        _this.sendComment = function (_id) {
+            var _this$refs = _this.refs,
+                commentName = _this$refs.commentName,
+                userComment = _this$refs.userComment;
+
+            var date = new Date();
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDay();
+
+            var params = {
+                commentName: '游客',
+                commentContent: userComment.value,
+                commentTime: y + '\u5E74' + m + '\u6708' + d + '\u65E5',
+                type: 'comment' + _id
+            };
+            _this.props.actions.userSendComment(params).then(function (resp) {
+                _this.setState({
+                    commentState: _this.state.commentState.concat(resp.doc)
+                });
+            });
+        };
+
+        _this.state = {
+            commentState: []
+        };
+        return _this;
     }
 
     _createClass(ShowPost, [{
         key: 'componentWillMount',
         value: function componentWillMount() {
+            var _this2 = this;
+
             var post_id = this.props.params.post_id;
 
 
             this.props.actions.fetchSinglePost(post_id);
+            this.props.actions.fetchUserComment(post_id).then(function (resp) {
+                _this2.setState({
+                    commentState: _this2.props.userComment
+                });
+            });
         }
     }, {
         key: 'render',
         value: function render() {
+            var _this3 = this;
+
             var singlePost = this.props.singlePost;
+            var commentState = this.state.commentState;
 
             return _react2.default.createElement(
                 'div',
@@ -31236,7 +31482,64 @@ var ShowPost = (_dec = (0, _connect2.default)(_showpost2.default), _dec(_class =
                 _react2.default.createElement(
                     'section',
                     null,
-                    singlePost.content
+                    _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: singlePost.content } })
+                ),
+                _react2.default.createElement(
+                    'section',
+                    null,
+                    _react2.default.createElement(
+                        'p',
+                        null,
+                        '\u7528\u6237\u8BC4\u8BBA'
+                    ),
+                    _react2.default.createElement(
+                        'ul',
+                        null,
+                        commentState.map(function (item) {
+                            return _react2.default.createElement(
+                                'li',
+                                { key: item._id },
+                                _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    item.commentName
+                                ),
+                                _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    item.commentContent
+                                ),
+                                _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    item.commentTime
+                                )
+                            );
+                        })
+                    )
+                ),
+                _react2.default.createElement(
+                    'footer',
+                    null,
+                    '\u7528\u6237\u540D\uFF1A',
+                    _react2.default.createElement(
+                        'span',
+                        { ref: 'commentName' },
+                        '\u6E38\u5BA2'
+                    ),
+                    _react2.default.createElement(
+                        'article',
+                        null,
+                        '\u8BC4\u8BBA\u5185\u5BB9:',
+                        _react2.default.createElement('textarea', { name: '', id: '', cols: '30', rows: '10', ref: 'userComment' }),
+                        _react2.default.createElement(
+                            'span',
+                            { onClick: function onClick() {
+                                    return _this3.sendComment(singlePost._id);
+                                } },
+                            '\u53D1\u8868\u8BC4\u8BBA'
+                        )
+                    )
                 )
             );
         }
@@ -31264,9 +31567,75 @@ var getSinglePost = function getSinglePost(state) {
 }; /**
     * Created by shen on 2017/2/7.
     */
-exports.default = (0, _reselect.createSelector)(getSinglePost, function (singlePost) {
+
+var getUserComment = function getUserComment(state) {
+    return state.showpost.userComment;
+};
+
+exports.default = (0, _reselect.createSelector)(getSinglePost, getUserComment, function (singlePost, userComment) {
     return {
-        singlePost: singlePost
+        singlePost: singlePost,
+        userComment: userComment
+    };
+});
+
+/***/ }),
+/* 305 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = editPost;
+
+var _ActionTypes = __webpack_require__(128);
+
+var types = _interopRequireWildcard(_ActionTypes);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var initialState = {
+    naturePost: []
+}; /**
+    * Created by shen on 2017/2/9.
+    */
+function editPost() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+    var action = arguments[1];
+
+    switch (action.type) {
+        case types.FETCH_NATURE_POST:
+            return Object.assign({}, state, { naturePost: action.naturePost });
+        default:
+            return state;
+    }
+}
+
+/***/ }),
+/* 306 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _reselect = __webpack_require__(235);
+
+var getNaturePost = function getNaturePost(state) {
+    return state.editPost.naturePost;
+}; /**
+    * Created by shen on 2017/2/9.
+    */
+exports.default = (0, _reselect.createSelector)(getNaturePost, function (naturePost) {
+    console.log('naturePost', naturePost);
+    return {
+        naturePost: naturePost
     };
 });
 
