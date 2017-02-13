@@ -34,8 +34,15 @@ export default class App extends React.Component{
     render() {
         return (
             <div>
-                <header><Link to={`/post?page=0`}>我的博客</Link>
-                    <Link to="/login"><span>{ this.state.isLogin ? '已登录' : '登录' }</span></Link>
+                <header className="navbar navbar-inverse navbar-static-top">
+                    <ul className="nav navbar-nav">
+                        <li>
+                            <Link to={`/post?page=0`}>我的博客</Link>
+                        </li>
+                        <li>
+                            <Link to="/login"><span>{ this.state.isLogin ? '已登录' : '登录' }</span></Link>
+                        </li>
+                    </ul>
                 </header>
             </div>
         )

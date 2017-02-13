@@ -26,7 +26,7 @@ export default class ShowPost extends React.Component {
         })
     }
     sendComment = (_id) => {
-        let {commentName, userComment} = this.refs
+        let {userComment} = this.refs
         let date = new Date()
         let y = date.getFullYear()
         let m = date.getMonth() + 1

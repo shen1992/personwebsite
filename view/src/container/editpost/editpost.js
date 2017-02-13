@@ -4,6 +4,7 @@
 import React from 'react'
 import connect from 'utils/connect'
 import editSelect from 'app/selectors/editpost'
+
 @connect(editSelect)
 export default class EditPost extends React.Component {
 
@@ -66,13 +67,15 @@ export default class EditPost extends React.Component {
         let {naturePost} = this.props
 
         return (
-            <div>
-                <header>
-                    <input type="text" placeholder="文章标题"  ref="title" />
-                    {naturePost._id ? <span onClick={() => this.editPost(naturePost._id )}>编辑文章</span> : <span onClick={() => this.sendPost()}>发表文章</span>}
-                    </header>
-                <section>
-                    <textarea name="" id="" cols="30" rows="10" ref="content" >
+            <div className="panel panel-info">
+                <header className="panel-heading">
+                    <input className="panel-title" type="text" placeholder="文章标题"  ref="title" />
+                    {naturePost._id ?
+                        <span  className="btn btn-success pull-right" onClick={() => this.editPost(naturePost._id )}>编辑文章</span> :
+                        <span  className="btn btn-success pull-right" onClick={() => this.sendPost()}>发表文章</span>}
+                </header>
+                <section className="panel-body">
+                    <textarea className="container" ref="content" >
                     </textarea>
                 </section>
             </div>

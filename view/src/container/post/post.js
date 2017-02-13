@@ -22,11 +22,20 @@ export default class Post extends React.Component {
     }
 
     componentWillMount() {
-        this.props.actions.fetchList(0).then(() => {
+        const page = this.props.router.location.query.page
+        this.props.actions.fetchList(page).then(() => {
             this.setState({
                 postList: this.props.postList
             })
         })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(this.props.postList.length !== nextProps.postList.length) {
+            this.setState({
+                postList: nextProps.postList
+            })
+        }
     }
 
     goToEitPost = () => {
@@ -83,10 +92,12 @@ export default class Post extends React.Component {
         if(!postList) return null
         return (
             <div>
-                <header>
-                    <span onClick={() => this.goToEitPost()} >写新文章</span>
-                    <input type="text" placeholder="请输入文章的标题" ref="postTitle" />
-                    <button onClick={() => this.findAssignPost()} >提交</button>
+                <header className="navbar navbar-inverse">
+                    <button className="btn btn-success pull-right" onClick={() => this.goToEitPost()} >写新文章</button>
+                    <input type="text" placeholder="请输入文章的标题" ref="postTitle" className="input-medium search-query" />
+                    <button onClick={() => this.findAssignPost()} className="btn">查询</button>
+                </header>
+                <div className="container">
                     {
                         assignPost.length ? <p>查询结果</p> : null
                     }
@@ -101,32 +112,33 @@ export default class Post extends React.Component {
                         })
 
                     }
-                </header>
-                <ul>
-                    {
-                        postList.map((item, index) => {
-                            return (
-                                <li key={item._id}>
-                                    <Link to={`/showpost/${item._id}`}>
-                                        <p>{item.title}</p>
-                                        <span>({item.postTime})</span>
-                                    </Link>
-                                    <Link to={`/editpost?postId=${item._id}`}>编辑</Link>
-                                    <span onClick={() => this.deletePost(item._id)}>删除</span>
-                                </li>
-                            )
-                        })
-                    }
-                </ul>
-                <span onClick={() => this.goToPreOrNexPage(-1)}>上一页</span>
-                <ul>
-                    {
-                        pageArr.map((item, index) => {
-                            return <li key={index} onClick={() => this.goToAssignPage(index)}>{index + 1}</li>
-                        })
-                    }
-                </ul>
-                <span onClick={() => this.goToPreOrNexPage(1)}>下一页</span>
-            </div>)
+                    <ol>
+                        {
+                            postList.map((item, index) => {
+                                return (
+                                    <li key={item._id}>
+                                        <Link to={`/showpost/${item._id}`}>
+                                            <p>{item.title}</p>
+                                            <span>({item.postTime})</span>
+                                        </Link>
+                                        <Link to={`/editpost?postId=${item._id}`}>编辑</Link>
+                                        <span onClick={() => this.deletePost(item._id)}>删除</span>
+                                    </li>
+                                )
+                            })
+                        }
+                    </ol>
+                    <ul className="pagination">
+                        <li onClick={() => this.goToPreOrNexPage(-1)}><a>上一页</a></li>
+                        {
+                            pageArr.map((item, index) => {
+                                return <li key={index} onClick={() => this.goToAssignPage(index)}><a>{index + 1}</a></li>
+                            })
+                        }
+                        <li className="next" onClick={() => this.goToPreOrNexPage(1)}><a>下一页</a></li>
+                    </ul>
+                </div>
+            </div>
+          )
     }
 }
