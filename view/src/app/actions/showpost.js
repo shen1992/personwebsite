@@ -23,7 +23,10 @@ export function userSendComment(params) {
         return new POST(`/userComment`, {...params})
             .send()
             .then(resp => {
-               return resp
+               dispatch({
+                   type: types.SEND_COMMENT,
+                   sendComment: resp.doc
+               })
             })
             .catch(err => {
                 throw err

@@ -14,6 +14,15 @@ export default function showpost(state = initialState, action) {
             return Object.assign({}, state, {singlePost: action.post})
         case types.FETCH_USER_COMMENT:
             return Object.assign({}, state, {userComment: action.userComment,})
+        case types.SEND_COMMENT:
+            return {
+                ...state,
+                userComment: [
+                    ...state.userComment,
+                    ...action.sendComment
+
+                ]
+            }
         default:
             return state
     }

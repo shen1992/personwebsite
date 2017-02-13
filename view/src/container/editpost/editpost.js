@@ -4,8 +4,9 @@
 import React from 'react'
 import connect from 'utils/connect'
 import editSelect from 'app/selectors/editpost'
-
+import './editpost.scss'
 @connect(editSelect)
+
 export default class EditPost extends React.Component {
 
     static contextTypes = {
@@ -67,7 +68,7 @@ export default class EditPost extends React.Component {
         let {naturePost} = this.props
 
         return (
-            <div className="panel panel-info">
+            <div className="EditPost panel panel-info">
                 <header className="panel-heading">
                     <input className="panel-title" type="text" placeholder="文章标题"  ref="title" />
                     {naturePost._id ?
@@ -75,7 +76,7 @@ export default class EditPost extends React.Component {
                         <span  className="btn btn-success pull-right" onClick={() => this.sendPost()}>发表文章</span>}
                 </header>
                 <section className="panel-body">
-                    <textarea className="container" ref="content" >
+                    <textarea className="EditPost__PostHeight container" ref="content" >
                     </textarea>
                 </section>
             </div>

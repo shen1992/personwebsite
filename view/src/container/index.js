@@ -8,12 +8,18 @@ import { Router, Route, browserHistory } from 'react-router'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore } from 'react-router-redux'
 import configureStore from 'app/store/configureStore'
+import 'sass/index.scss'
+// import Home from 'react-proxy-loader?name=Home!./home'
+// import Post from 'react-proxy-loader?name=Post!./post'
+// import Login from 'react-proxy-loader?name=Login!./login'
+// import EditPost from 'react-proxy-loader?name=EditPost!./editpost'
+// import ShowPost from 'react-proxy-loader?name=ShowPost!./showpost'
 
-import Home from './home'
-import Post from './post'
-import Login from './login'
-import EditPost from './editpost'
-import ShowPost from './showpost'
+import Home from './home/home'
+import Post from './post/post'
+import Login from './login/login'
+import EditPost from './editpost/editpost'
+import ShowPost from './showpost/showpost'
 
 const routes = (history) => (
     <Router history={history}>

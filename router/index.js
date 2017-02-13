@@ -48,16 +48,16 @@ router.get('/naturePost', function (req, res) {
 
 router.get('/login', function (req, res) {
     if(req.session.user) {
-        res.send({code: '200'})
+        res.send({code: '200', isLogin: true})
     } else {
-        res.send({code: '500', message: '请先登录！'})
+        res.send({code: '500', message: '请先登录', isLogin: false})
     }
 })
 
 router.post('/login', function (req, res) {
     var user = {
         username: 'shen',
-        password: 'lyg5518263'
+        password: 'shen'
     }
     if(req.body.username === user.username && req.body.password === user.password) {
         req.session.user = user

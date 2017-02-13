@@ -3,19 +3,13 @@
  */
 import {createSelector} from 'reselect'
 
-const getHomeList = state => state.home.list
-const getUserComment = state => state.home.userComment
-const getDeleteCommentId = state => state.home.deleteId
+const getHomeLogin = state => state.home.isLogin
 
 export default createSelector(
-    getHomeList,
-    getUserComment,
-    getDeleteCommentId,
-    (list, userComment, deleteId) => {
-
+    getHomeLogin,
+    (isLogin) => {
         return {
-            list,
-            userComment
+            isLogin,
         }
     }
 )

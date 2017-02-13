@@ -20,6 +20,8 @@ export default function post(state = initialState, action) {
             })
         case types.FIND_ASSIGN_POST:
             return Object.assign({}, state, {assignPost: action.assignPost})
+        case types.RESET_ASSIGN_POST:
+            return Object.assign({}, state, {assignPost: []})
         default:
             return state
     }

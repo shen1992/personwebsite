@@ -1,0 +1,25 @@
+.ShowPost {
+  &__Banner {
+    height: 300px;
+    width: 100%;
+    background: url(../../assets/images/banner.jpg) no-repeat;
+    background-size: cover;
+  }
+  &__Title {
+    margin-top: 20px;
+    &__Text {
+      color: #fff;
+    }
+  }
+  textarea {
+    box-shadow: none;
+    -webkit-appearance: none;
+    overflow: auto;
+    padding: 10px;
+    height: 54px;
+    margin: 0;
+    resize: none;
+    color: #999;
+    width: 100%;
+  }
+}

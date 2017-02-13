@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import connect from 'utils/connect'
-
+import './login.scss'
 @connect()
 
 export default class Login extends React.Component {
@@ -29,11 +29,27 @@ export default class Login extends React.Component {
 
     render() {
         return(
-            <div>
-                <p>shen后台登录</p>
-                <div><span>用户名：</span><input type="text" placeholder="用户名" ref="username" /></div>
-                <div><span>密码：</span><input type="password" placeholder="密码" ref="password" /></div>
-                <button onClick={() => this.userLogin()}>登录</button>
+            <div className="Login">
+                <div className="container">
+                    <div className="form row">
+                        <div className="form-horizontal col-sm-offset-3 col-md-offset-3">
+                            <h3 className="form-title">shen后台登录</h3>
+                            <div className="col-sm-9 col-md-9">
+                                <div className="form-group">
+                                    <i className="fa fa-user fa-lg"></i>
+                                    <input type="text" placeholder="用户名" ref="username" className="form-control required" />
+                                </div>
+                                <div className="form-group">
+                                    <i className="fa fa-lock fa-lg"></i>
+                                    <input type="password" placeholder="密码" ref="password" className="form-control required" />
+                                </div>
+                                <div className="form-group">
+                                    <button onClick={() => this.userLogin()} className="btn btn-success pull-right">登录</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }

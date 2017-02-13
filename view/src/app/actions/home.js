@@ -4,5 +4,19 @@
 import * as types from 'app/constants/ActionTypes'
 import {GET, POST} from 'utils/request'
 
-
+export function userLogin() {
+    return (dispatch, getState) => {
+        return new GET('/login')
+            .send()
+            .then(resp => {
+                dispatch({
+                    type: types.IS_LOGIN,
+                    isLogin: resp.isLogin
+                })
+            })
+            .catch((error) => {
+                console.log(err)
+            })
+    }
+}
 

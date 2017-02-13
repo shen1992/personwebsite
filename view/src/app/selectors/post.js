@@ -7,18 +7,21 @@ const getPostList = state => state.post.postList
 const getPostPageCount = state => state.post.pageArr
 const getPostCount = state => state.post.count
 const getAssignPost = state => state.post.assignPost
+const getUserIsLogin = state => state.home.isLogin
 
 export default createSelector(
     getPostList,
     getPostPageCount,
     getPostCount,
     getAssignPost,
-    (postList, pageArr, count, assignPost) => {
+    getUserIsLogin,
+    (postList, pageArr, count, assignPost, isLogin) => {
         return {
             postList,
             pageArr,
             count,
             assignPost,
+            isLogin
         }
     }
 )

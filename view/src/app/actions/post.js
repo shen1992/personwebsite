@@ -25,19 +25,6 @@ export function fetchList(num) {
     }
 }
 
-export function userLogin() {
-    return (dispatch, getState) => {
-        return new GET('/login')
-            .send()
-            .then(resp => {
-                return resp
-            })
-            .catch((error) => {
-                console.log(err)
-            })
-    }
-}
-
 export function deletePost(id) {
     return (dispatch, getState) => {
         return new POST('/delete', {_id: id})
@@ -58,5 +45,15 @@ export function findAssignPost(title) {
                     assignPost: resp
                 })
             })
+    }
+}
+
+export function resetAssignPost() {
+    return (dispatch, getState) => {
+        return new Promise(reslove => {
+            if(dispatch({type: types.RESET_ASSIGN_POST})) {
+                reslove('success !')
+            }
+        })
     }
 }

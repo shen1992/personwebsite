@@ -5,25 +5,18 @@ import React from 'react'
 import {Link} from 'react-router'
 import showPostSelect from 'app/selectors/showpost'
 import connect from 'utils/connect'
-
+import './showpost.scss'
 @connect(showPostSelect)
 
 export default class ShowPost extends React.Component {
     constructor(args) {
         super(...args)
-        this.state = {
-            commentState : []
-        }
     }
     componentWillMount() {
         let {post_id} = this.props.params
 
         this.props.actions.fetchSinglePost(post_id)
-        this.props.actions.fetchUserComment(post_id).then(resp => {
-            this.setState({
-                commentState: this.props.userComment
-            })
-        })
+        this.props.actions.fetchUserComment(post_id)
     }
     sendComment = (_id) => {
         let {userComment} = this.refs
@@ -39,46 +32,53 @@ export default class ShowPost extends React.Component {
             type: `comment${_id}`,
         }
         this.props.actions.userSendComment(params).then(resp => {
-            this.setState({
-                commentState: this.state.commentState.concat(resp.doc)
-            })
+            userComment.value = ''
         })
 
     }
     render() {
-        let {singlePost} = this.props
-        let {commentState} = this.state
+        let {singlePost, userComment} = this.props
         return(
-            <div>
-                <header>
-                    <p>{singlePost.title}</p>
-                    <span>{singlePost.postTime}</span>
+            <div className="ShowPost">
+                <header className="ShowPost__Banner">
+                    <section className="contianer">
+                        <div className="row">
+                            <div className="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                                <div className="post-heading">
+                                    <h1 className="ShowPost__Title__Text">{singlePost.title}</h1>
+                                    <h2 className="ShowPost__Title__Text">{singlePost.postTime}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </header>
-                <section><div dangerouslySetInnerHTML={{__html: singlePost.content}}></div></section>
-                <section>
-                    <p>用户评论</p>
-                    <ul>
-                        {
-                            commentState.map((item) => {
-                                return (
-                                    <li key={item._id}>
-                                        <span>{item.commentName}</span>
-                                        <span>{item.commentContent}</span>
-                                        <span>{item.commentTime}</span>
-                                    </li>
-                                )
-                            })
-                        }
-                    </ul>
-                </section>
-                <footer>
-                    用户名：<span ref="commentName">游客</span>
-                    <article>
-                        评论内容:
-                        <textarea name="" id="" cols="30" rows="10" ref="userComment" ></textarea>
-                        <span onClick={() => this.sendComment(singlePost._id)}>发表评论</span>
-                    </article>
-                </footer>
+                <div className="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 post-container">
+                    <section><div dangerouslySetInnerHTML={{__html: singlePost.content}}></div></section>
+                    <section>
+                        <p>用户评论</p>
+                        <ol>
+                            {
+                                userComment.map((item) => {
+                                    return (
+                                        <li key={item._id}>
+                                            <span>{item.commentName}</span>
+                                            <span>{item.commentContent}</span>
+                                            <span>{item.commentTime}</span>
+                                        </li>
+                                    )
+                                })
+                            }
+                        </ol>
+                    </section>
+                    <footer>
+                        用户名：<span ref="commentName">游客</span>
+                        <article>
+                            评论内容:
+                            <textarea ref="userComment" className="ds-textarea-wrapper ds-rounded-top" ></textarea>
+                            <button className="btn btn-success" onClick={() => this.sendComment(singlePost._id)}>发表评论</button>
+                        </article>
+                    </footer>
+                </div>
             </div>
         )
     }
