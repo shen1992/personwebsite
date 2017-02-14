@@ -6,6 +6,7 @@ import {Link} from 'react-router'
 import showPostSelect from 'app/selectors/showpost'
 import connect from 'utils/connect'
 import './showpost.scss'
+import Banner from 'components/banner/banner.js'
 @connect(showPostSelect)
 
 export default class ShowPost extends React.Component {
@@ -40,18 +41,7 @@ export default class ShowPost extends React.Component {
         let {singlePost, userComment} = this.props
         return(
             <div className="ShowPost">
-                <header className="ShowPost__Banner">
-                    <section className="contianer">
-                        <div className="row">
-                            <div className="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                                <div className="post-heading">
-                                    <h1 className="ShowPost__Title__Text">{singlePost.title}</h1>
-                                    <h2 className="ShowPost__Title__Text">{singlePost.postTime}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </header>
+                <Banner title={singlePost.title} time={singlePost.postTime} />
                 <div className="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 post-container">
                     <section><div dangerouslySetInnerHTML={{__html: singlePost.content}}></div></section>
                     <section>
@@ -70,7 +60,7 @@ export default class ShowPost extends React.Component {
                             }
                         </ol>
                     </section>
-                    <footer>
+                    <footer className="ShowPost__Footer">
                         用户名：<span ref="commentName">游客</span>
                         <article>
                             评论内容:

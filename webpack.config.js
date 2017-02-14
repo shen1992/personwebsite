@@ -27,9 +27,6 @@ module.exports = {
     ],
     module: {
         loaders: [{
-            test: /\.coffee$/,
-            loader: 'coffee-loader'
-        }, {
             test: /\.css$/,
             loader: "css-loader"
         }, {

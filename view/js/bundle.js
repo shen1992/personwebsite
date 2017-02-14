@@ -2907,6 +2907,8 @@ webpackJsonp([0],[
 	    switch (action.type) {
 	        case types.IS_LOGIN:
 	            return Object.assign({}, state, { isLogin: action.isLogin });
+	        case types.IS_LOGOUT:
+	            return Object.assign({}, state, { isLogin: action.isLogin });
 	        default:
 	            return state;
 	    }
@@ -2926,6 +2928,7 @@ webpackJsonp([0],[
 	 */
 	//home
 	var IS_LOGIN = exports.IS_LOGIN = 'IS_LOGIN';
+	var IS_LOGOUT = exports.IS_LOGOUT = 'IS_LOGOUT';
 
 	//post
 	var FETCH_LIST = exports.FETCH_LIST = 'FETCH_LIST';
@@ -3993,7 +3996,7 @@ webpackJsonp([0],[
 
 
 	// module
-	exports.push([module.id, ".flex {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex; }\n\n.flex-center {\n  -webkit-box-pack: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\nul {\n  list-style: none; }\n\n.navbar {\n  margin-bottom: 0; }\n", ""]);
+	exports.push([module.id, ".flex {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex; }\n\n.flex-center {\n  -webkit-box-pack: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.navbar {\n  margin-bottom: 0; }\n", ""]);
 
 	// exports
 
@@ -4319,9 +4322,9 @@ webpackJsonp([0],[
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _dec, _class; /**
-	                   * Created by shen on 2017/2/4.
-	                   */
+	var _dec, _class, _class2, _temp; /**
+	                                   * Created by shen on 2017/2/4.
+	                                   */
 	/**
 	 * Created by shen on 2017/2/3.
 	 */
@@ -4355,7 +4358,7 @@ webpackJsonp([0],[
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var App = (_dec = (0, _connect2.default)(_home2.default), _dec(_class = function (_React$Component) {
+	var App = (_dec = (0, _connect2.default)(_home2.default), _dec(_class = (_temp = _class2 = function (_React$Component) {
 	    _inherits(App, _React$Component);
 
 	    function App(args) {
@@ -4363,7 +4366,17 @@ webpackJsonp([0],[
 
 	        _classCallCheck(this, App);
 
-	        return _possibleConstructorReturn(this, (_ref = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref, [this].concat(_toConsumableArray(args))));
+	        var _this = _possibleConstructorReturn(this, (_ref = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref, [this].concat(_toConsumableArray(args))));
+
+	        _this.goToLogin = function () {
+	            _this.context.router.push('/login');
+	        };
+
+	        _this.userLogout = function () {
+	            _this.props.actions.userLogout();
+	        };
+
+	        return _this;
 	    }
 
 	    _createClass(App, [{
@@ -4374,56 +4387,73 @@ webpackJsonp([0],[
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var isLogin = this.props.isLogin;
 
 	            return _react2.default.createElement(
 	                'div',
-	                null,
+	                { className: 'Home' },
 	                _react2.default.createElement(
-	                    'header',
-	                    { className: 'navbar navbar-inverse navbar-static-top' },
+	                    'nav',
+	                    { className: 'navbar navbar-inverse navbar-custom navbar-fixed-top' },
 	                    _react2.default.createElement(
 	                        'div',
-	                        { className: 'container' },
+	                        { className: 'container-fluid' },
 	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'navbar-collapse collapse' },
+	                            'a',
+	                            { className: 'navbar-brand pull-left' },
+	                            '\u4E0A\u5584\u82E5\u6C34'
+	                        ),
+	                        _react2.default.createElement(
+	                            'ul',
+	                            { className: 'nav navbar-nav navbar-right' },
 	                            _react2.default.createElement(
-	                                'ul',
-	                                { className: 'nav navbar-nav' },
-	                                _react2.default.createElement(
-	                                    'li',
+	                                'li',
+	                                { className: 'pull-right' },
+	                                isLogin ? _react2.default.createElement(
+	                                    'a',
+	                                    { href: '' },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        { onClick: function onClick() {
+	                                                return _this2.userLogout();
+	                                            } },
+	                                        '\u5DF2\u767B\u5F55'
+	                                    )
+	                                ) : _react2.default.createElement(
+	                                    'a',
 	                                    null,
 	                                    _react2.default.createElement(
-	                                        _reactRouter.Link,
-	                                        { to: '/post?page=0' },
-	                                        '\u6211\u7684\u535A\u5BA2'
+	                                        'span',
+	                                        { onClick: function onClick() {
+	                                                return _this2.goToLogin();
+	                                            } },
+	                                        '\u767B\u5F55'
 	                                    )
-	                                ),
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                { className: 'pull-right' },
 	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
-	                                    _react2.default.createElement(
-	                                        _reactRouter.Link,
-	                                        { to: '/login' },
-	                                        _react2.default.createElement(
-	                                            'span',
-	                                            null,
-	                                            isLogin ? '已登录' : '登录'
-	                                        )
-	                                    )
+	                                    _reactRouter.Link,
+	                                    { to: '/post?page=0' },
+	                                    '\u6211\u7684\u535A\u5BA2'
 	                                )
 	                            )
 	                        )
 	                    )
 	                ),
-	                _react2.default.createElement(_banner2.default, null)
+	                _react2.default.createElement(_banner2.default, { title: '\u751F\u547D\u8BDA\u53EF\u8D35\uFF0Ccoding\u4EF7\u66F4\u9AD8' })
 	            );
 	        }
 	    }]);
 
 	    return App;
-	}(_react2.default.Component)) || _class);
+	}(_react2.default.Component), _class2.contextTypes = {
+	    router: _react2.default.PropTypes.object
+	}, _temp)) || _class);
 	exports.default = App;
 
 /***/ },
@@ -4557,6 +4587,7 @@ webpackJsonp([0],[
 	    value: true
 	});
 	exports.userLogin = userLogin;
+	exports.userLogout = userLogout;
 
 	var _ActionTypes = __webpack_require__(279);
 
@@ -4578,6 +4609,17 @@ webpackJsonp([0],[
 	            });
 	        }).catch(function (error) {
 	            console.log(err);
+	        });
+	    };
+	}
+
+	function userLogout() {
+	    return function (dispatch, getState) {
+	        return new _request.POST('/logout').send().then(function (resp) {
+	            dispatch({
+	                type: types.IS_LOGOUT,
+	                isLogin: res.isLogin
+	            });
 	        });
 	    };
 	}
@@ -5036,8 +5078,40 @@ webpackJsonp([0],[
 	/**
 	 * Created by shen on 2017/2/13.
 	 */
-	exports.default = function () {
-	    return _react2.default.createElement('div', { className: 'Banner' });
+	exports.default = function (_ref) {
+	    var title = _ref.title,
+	        time = _ref.time;
+
+	    return _react2.default.createElement(
+	        'div',
+	        { className: 'Banner' },
+	        _react2.default.createElement(
+	            'div',
+	            { className: 'container' },
+	            _react2.default.createElement(
+	                'div',
+	                { className: 'row' },
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'post-heading' },
+	                        title ? _react2.default.createElement(
+	                            'h1',
+	                            { className: 'ShowPost__Title__Text' },
+	                            title
+	                        ) : null,
+	                        time ? _react2.default.createElement(
+	                            'h2',
+	                            { className: 'ShowPost__Title__Text' },
+	                            time
+	                        ) : null
+	                    )
+	                )
+	            )
+	        )
+	    );
 	};
 
 /***/ },
@@ -5075,7 +5149,7 @@ webpackJsonp([0],[
 
 
 	// module
-	exports.push([module.id, ".Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(308) + ") no-repeat;\n  background-size: cover; }\n", ""]);
+	exports.push([module.id, ".Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(308) + ") no-repeat;\n  background-size: cover; }\n  .Banner .post-heading {\n    padding: 85px 0 55px; }\n", ""]);
 
 	// exports
 
@@ -5225,31 +5299,43 @@ webpackJsonp([0],[
 
 	            return _react2.default.createElement(
 	                'div',
-	                null,
+	                { className: 'Post' },
 	                _react2.default.createElement(
 	                    'header',
-	                    { className: 'navbar navbar-inverse container-fluid row' },
+	                    { className: 'navbar navbar-inverse' },
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'navbar-form' },
 	                        _react2.default.createElement(
 	                            'div',
-	                            { className: 'input-group col-md-3' },
-	                            _react2.default.createElement('input', { type: 'text', placeholder: '\u8BF7\u8F93\u5165\u6587\u7AE0\u7684\u6807\u9898', ref: 'postTitle', className: 'form-control' }),
+	                            { className: 'container-fluid' },
 	                            _react2.default.createElement(
-	                                'span',
-	                                { onClick: function onClick() {
-	                                        return _this2.findAssignPost();
-	                                    }, className: 'input-group-addon' },
-	                                '\u67E5\u8BE2'
+	                                'div',
+	                                { className: 'row' },
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'col-md-4 col-xs-8' },
+	                                    _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'input-group' },
+	                                        _react2.default.createElement('input', { type: 'text', placeholder: '\u8BF7\u8F93\u5165\u6587\u7AE0\u7684\u6807\u9898', ref: 'postTitle', className: 'form-control' }),
+	                                        _react2.default.createElement(
+	                                            'span',
+	                                            { onClick: function onClick() {
+	                                                    return _this2.findAssignPost();
+	                                                }, className: 'input-group-addon' },
+	                                            '\u67E5\u8BE2'
+	                                        )
+	                                    )
+	                                ),
+	                                _react2.default.createElement(
+	                                    'button',
+	                                    { className: 'btn btn-success col-md-1 col-xs-3 col-md-offset-6', onClick: function onClick() {
+	                                            return _this2.goToEitPost();
+	                                        } },
+	                                    '\u5199\u65B0\u6587\u7AE0'
+	                                )
 	                            )
-	                        ),
-	                        _react2.default.createElement(
-	                            'button',
-	                            { className: 'btn btn-success pull-right', onClick: function onClick() {
-	                                    return _this2.goToEitPost();
-	                                } },
-	                            '\u5199\u65B0\u6587\u7AE0'
 	                        )
 	                    )
 	                ),
@@ -5465,7 +5551,7 @@ webpackJsonp([0],[
 
 
 	// module
-	exports.push([module.id, "", ""]);
+	exports.push([module.id, ".Post .container {\n  margin-top: 15px; }\n\n.Post ul {\n  list-style: none; }\n", ""]);
 
 	// exports
 
@@ -5899,6 +5985,10 @@ webpackJsonp([0],[
 
 	__webpack_require__(323);
 
+	var _banner = __webpack_require__(305);
+
+	var _banner2 = _interopRequireDefault(_banner);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -5962,36 +6052,7 @@ webpackJsonp([0],[
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'ShowPost' },
-	                _react2.default.createElement(
-	                    'header',
-	                    { className: 'ShowPost__Banner' },
-	                    _react2.default.createElement(
-	                        'section',
-	                        { className: 'contianer' },
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'row' },
-	                            _react2.default.createElement(
-	                                'div',
-	                                { className: 'col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1' },
-	                                _react2.default.createElement(
-	                                    'div',
-	                                    { className: 'post-heading' },
-	                                    _react2.default.createElement(
-	                                        'h1',
-	                                        { className: 'ShowPost__Title__Text' },
-	                                        singlePost.title
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        'h2',
-	                                        { className: 'ShowPost__Title__Text' },
-	                                        singlePost.postTime
-	                                    )
-	                                )
-	                            )
-	                        )
-	                    )
-	                ),
+	                _react2.default.createElement(_banner2.default, { title: singlePost.title, time: singlePost.postTime }),
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 post-container' },
@@ -6036,7 +6097,7 @@ webpackJsonp([0],[
 	                    ),
 	                    _react2.default.createElement(
 	                        'footer',
-	                        null,
+	                        { className: 'ShowPost__Footer' },
 	                        '\u7528\u6237\u540D\uFF1A',
 	                        _react2.default.createElement(
 	                            'span',
@@ -6130,7 +6191,7 @@ webpackJsonp([0],[
 
 
 	// module
-	exports.push([module.id, ".ShowPost__Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(308) + ") no-repeat;\n  background-size: cover; }\n\n.ShowPost__Title {\n  margin-top: 20px; }\n  .ShowPost__Title__Text {\n    color: #fff; }\n\n.ShowPost textarea {\n  box-shadow: none;\n  -webkit-appearance: none;\n  overflow: auto;\n  padding: 10px;\n  height: 54px;\n  margin: 0;\n  resize: none;\n  color: #999;\n  width: 100%; }\n", ""]);
+	exports.push([module.id, ".ShowPost__Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(308) + ") no-repeat;\n  background-size: cover; }\n\n.ShowPost__Title {\n  margin-top: 20px; }\n  .ShowPost__Title__Text {\n    color: #fff; }\n\n.ShowPost textarea {\n  box-shadow: none;\n  -webkit-appearance: none;\n  overflow: auto;\n  padding: 10px;\n  height: 54px;\n  margin: 0;\n  resize: none;\n  color: #999;\n  width: 100%; }\n\n.ShowPost__Footer {\n  margin-bottom: 15px; }\n\n.ShowPost .post-container {\n  margin-top: 15px; }\n", ""]);
 
 	// exports
 

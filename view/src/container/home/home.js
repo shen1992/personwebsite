@@ -18,29 +18,43 @@ export default class App extends React.Component{
         super(...args)
     }
 
+    static contextTypes = {
+        router: React.PropTypes.object
+    }
+
     componentWillMount() {
         this.props.actions.userLogin()
     }
 
+    goToLogin = () => {
+        this.context.router.push('/login')
+    }
+
+    userLogout = () => {
+        this.props.actions.userLogout()
+    }
+
+
     render() {
         let {isLogin} = this.props
         return (
-            <div>
-                <header className="navbar navbar-inverse navbar-static-top">
-                    <div className="container">
-                        <div className="navbar-collapse collapse">
-                            <ul className="nav navbar-nav">
-                                <li>
-                                    <Link to={`/post?page=0`}>我的博客</Link>
-                                </li>
-                                <li>
-                                    <Link to="/login"><span>{ isLogin ? '已登录' : '登录' }</span></Link>
-                                </li>
-                            </ul>
-                        </div>
+            <div className="Home">
+                <nav className="navbar navbar-inverse navbar-custom navbar-fixed-top">
+                    <div className="container-fluid">
+                        <a className="navbar-brand pull-left">上善若水</a>
+                        <ul className="nav navbar-nav navbar-right">
+                            <li className="pull-right">
+                                {
+                                    isLogin ? <a href=""><span onClick={() => this.userLogout()}>已登录</span></a> : <a><span onClick={() => this.goToLogin()}>登录</span></a>
+                                }
+                            </li>
+                            <li className="pull-right">
+                                <Link to={`/post?page=0`}>我的博客</Link>
+                            </li>
+                        </ul>
                     </div>
-                </header>
-                <Banner />
+                </nav>
+                <Banner title="生命诚可贵，coding价更高" />
             </div>
         )
     }

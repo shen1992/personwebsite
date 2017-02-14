@@ -68,6 +68,12 @@ router.post('/login', function (req, res) {
     }
 })
 
+router.post('/logout', function (req, res) {
+    req.session.user = null
+    req.session.error = null
+    res.send({code: '200', isLogin: false})
+})
+
 router.post('/create', function (req, res) {
     var arr = [{
         author: req.body.author,
@@ -96,6 +102,7 @@ router.post('/userComment', function (req, res) {
     Website.create(arr, (err, doc) => {
         if(err) return console.log(err)
         if(doc) {
+            console.log()
             res.send({code: '200', doc})
             console.log('成功插入数据库！')
         }

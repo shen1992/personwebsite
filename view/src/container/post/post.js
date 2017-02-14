@@ -87,14 +87,20 @@ export default class Post extends React.Component {
     render() {
         let {pageArr, assignPost, postList, isLogin} = this.props
         return (
-            <div>
-                <header className="navbar navbar-inverse container-fluid row">
+            <div className="Post">
+                <header className="navbar navbar-inverse">
                     <div className="navbar-form">
-                        <div className="input-group col-md-3">
-                            <input type="text" placeholder="请输入文章的标题" ref="postTitle" className="form-control" />
-                            <span onClick={() => this.findAssignPost()} className="input-group-addon">查询</span>
+                        <div className="container-fluid">
+                            <div className="row">
+                                <div className="col-md-4 col-xs-8">
+                                    <div className="input-group">
+                                        <input type="text" placeholder="请输入文章的标题" ref="postTitle" className="form-control" />
+                                        <span onClick={() => this.findAssignPost()} className="input-group-addon">查询</span>
+                                    </div>
+                                </div>
+                                <button className="btn btn-success col-md-1 col-xs-3 col-md-offset-6" onClick={() => this.goToEitPost()} >写新文章</button>
+                            </div>
                         </div>
-                        <button className="btn btn-success pull-right" onClick={() => this.goToEitPost()} >写新文章</button>
                     </div>
                 </header>
                 <div className="container">

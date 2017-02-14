@@ -20,3 +20,16 @@ export function userLogin() {
     }
 }
 
+export function userLogout() {
+    return (dispatch, getState) => {
+        return new POST(`/logout`)
+            .send()
+            .then((resp) => {
+                dispatch({
+                    type: types.IS_LOGOUT,
+                    isLogin: res.isLogin
+                })
+            })
+    }
+}
+
