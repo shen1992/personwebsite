@@ -49,3 +49,16 @@ export function fetchUserComment(_id) {
             })
     }
 }
+
+export function fetchRecentPost() {
+    return (dispatch, getState) => {
+        return new GET('/recentPost')
+            .send()
+            .then(resp => {
+                dispatch({
+                    type: types.FETCH_RECENT_POST,
+                    recentPost: resp
+                })
+            })
+    }
+}

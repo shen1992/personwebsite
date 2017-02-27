@@ -28,4 +28,14 @@
   .post-container {
     margin-top: 15px;
   }
+  &__Comment {
+    padding: 0;
+    list-style: none;
+  }
+  img {
+    width: 300px;
+  }
+  &__Footer {
+    margin-top: 15px;
+  }
 }

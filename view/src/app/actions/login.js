@@ -9,6 +9,10 @@ export function sendUserLogin(params) {
         return new POST('/login', {...params})
             .send()
             .then((resp) => {
+                dispatch({
+                    type: types.USER_LONGIN,
+                    isLogin: resp.isLogin
+                })
                 return resp
             })
             .catch((err) => {

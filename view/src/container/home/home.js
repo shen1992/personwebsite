@@ -7,8 +7,8 @@
 import React from 'react'
 import connect from 'utils/connect'
 import HomeSelect from 'app/selectors/home'
-import {Link} from 'react-router'
-import Banner from 'components/banner/banner.js'
+import Banner from 'comp/banner/banner.js'
+import Nav from 'comp/Nav'
 
 @connect(HomeSelect)
 
@@ -39,22 +39,8 @@ export default class App extends React.Component{
         let {isLogin} = this.props
         return (
             <div className="Home">
-                <nav className="navbar navbar-inverse navbar-custom navbar-fixed-top">
-                    <div className="container-fluid">
-                        <a className="navbar-brand pull-left">上善若水</a>
-                        <ul className="nav navbar-nav navbar-right">
-                            <li className="pull-right">
-                                {
-                                    isLogin ? <a href=""><span onClick={() => this.userLogout()}>已登录</span></a> : <a><span onClick={() => this.goToLogin()}>登录</span></a>
-                                }
-                            </li>
-                            <li className="pull-right">
-                                <Link to={`/post?page=0`}>我的博客</Link>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-                <Banner title="生命诚可贵，coding价更高" />
+                <Nav isLogin={isLogin} goToLogin={this.goToLogin} userLogout={this.userLogout} />
+                <Banner title="努力，奋斗" />
             </div>
         )
     }

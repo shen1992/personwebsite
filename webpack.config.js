@@ -9,7 +9,7 @@ var app = join(root, 'view/src/app')
 var utils = join(root, 'view/src/utils')
 var sass = join(root, 'view/src/sass')
 var assets = join(root, 'view/src/assets')
-var components = join(root, 'view/src/components')
+var comp = join(root, 'view/src/components')
 var webpack = require('webpack')
 
 module.exports = {
@@ -46,7 +46,7 @@ module.exports = {
             utils,
             sass,
             assets,
-            components
+            comp
         }
     }
 }

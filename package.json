@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "pm2 start app.js",
+    "stop": "pm2 start stop ",
+    "heroku": "node app.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +24,7 @@
     "css-loader": "^0.23.1",
     "express": "^4.14.1",
     "express-session": "^1.15.0",
+    "fecha": "^2.3.0",
     "file-loader": "^0.10.0",
     "history": "^4.5.1",
     "markdown": "^0.5.0",

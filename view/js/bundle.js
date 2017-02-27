@@ -22,25 +22,25 @@ webpackJsonp([0],[
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
-	__webpack_require__(290);
+	__webpack_require__(291);
 
-	var _home = __webpack_require__(294);
+	var _home = __webpack_require__(295);
 
 	var _home2 = _interopRequireDefault(_home);
 
-	var _post = __webpack_require__(309);
+	var _post = __webpack_require__(314);
 
 	var _post2 = _interopRequireDefault(_post);
 
-	var _login = __webpack_require__(313);
+	var _login = __webpack_require__(318);
 
 	var _login2 = _interopRequireDefault(_login);
 
-	var _editpost = __webpack_require__(317);
+	var _editpost = __webpack_require__(322);
 
 	var _editpost2 = _interopRequireDefault(_editpost);
 
-	var _showpost = __webpack_require__(321);
+	var _showpost = __webpack_require__(326);
 
 	var _showpost2 = _interopRequireDefault(_showpost);
 
@@ -2805,7 +2805,7 @@ webpackJsonp([0],[
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _reduxThunk = __webpack_require__(283);
+	var _reduxThunk = __webpack_require__(284);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
@@ -2818,7 +2818,7 @@ webpackJsonp([0],[
 
 	var middlewares = [_reduxThunk2.default];
 
-	var createLogger = __webpack_require__(284);
+	var createLogger = __webpack_require__(285);
 	var logger = createLogger({
 	    level: 'info',
 	    logger: console,
@@ -2863,19 +2863,22 @@ webpackJsonp([0],[
 
 	var _editpost2 = _interopRequireDefault(_editpost);
 
+	var _login = __webpack_require__(283);
+
+	var _login2 = _interopRequireDefault(_login);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/**
-	 * Created by shen on 2017/2/4.
-	 */
 	var rootReducer = (0, _redux.combineReducers)({
 	    home: _home2.default,
 	    post: _post2.default,
 	    showpost: _showpost2.default,
 	    editPost: _editpost2.default,
+	    login: _login2.default,
 	    routing: _reactRouterRedux.routerReducer
-	});
-
+	}); /**
+	     * Created by shen on 2017/2/4.
+	     */
 	exports.default = rootReducer;
 
 /***/ },
@@ -2934,14 +2937,19 @@ webpackJsonp([0],[
 	var FETCH_LIST = exports.FETCH_LIST = 'FETCH_LIST';
 	var FIND_ASSIGN_POST = exports.FIND_ASSIGN_POST = 'FIND_ASSIGN_POST';
 	var RESET_ASSIGN_POST = exports.RESET_ASSIGN_POST = 'RESET_ASSIGN_POST';
+	var DELETE_POST = exports.DELETE_POST = 'DELETE_POST';
 
 	//showpost
 	var FETCH_SINGLE_POST = exports.FETCH_SINGLE_POST = 'FETCH_SINGLE_POST';
 	var FETCH_USER_COMMENT = exports.FETCH_USER_COMMENT = 'FETCH_USER_COMMENT';
 	var SEND_COMMENT = exports.SEND_COMMENT = 'SEND_COMMENT';
+	var FETCH_RECENT_POST = exports.FETCH_RECENT_POST = 'FETCH_RECENT_POST';
 
 	//editpost
 	var FETCH_NATURE_POST = exports.FETCH_NATURE_POST = 'FETCH_NATURE_POST';
+
+	//login
+	var USER_LONGIN = exports.USER_LONGIN = 'USER_LONGIN';
 
 /***/ },
 /* 280 */
@@ -2952,6 +2960,12 @@ webpackJsonp([0],[
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
+	                                                                                                                                                                                                                                                                   * Created by shen on 2017/2/7.
+	                                                                                                                                                                                                                                                                   */
+
+
 	exports.default = post;
 
 	var _ActionTypes = __webpack_require__(279);
@@ -2964,10 +2978,10 @@ webpackJsonp([0],[
 	    postList: [],
 	    count: 0,
 	    pageArr: [],
-	    assignPost: []
-	}; /**
-	    * Created by shen on 2017/2/7.
-	    */
+	    assignPost: [],
+	    deleteId: 0
+	};
+
 	function post() {
 	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	    var action = arguments[1];
@@ -2983,6 +2997,12 @@ webpackJsonp([0],[
 	            return Object.assign({}, state, { assignPost: action.assignPost });
 	        case types.RESET_ASSIGN_POST:
 	            return Object.assign({}, state, { assignPost: [] });
+	        case types.DELETE_POST:
+	            return _extends({}, state, {
+	                postList: state.postList.filter(function (item) {
+	                    return item._id != action.deleteId;
+	                })
+	            });
 	        default:
 	            return state;
 	    }
@@ -3015,7 +3035,8 @@ webpackJsonp([0],[
 
 	var initialState = {
 	    singlePost: [],
-	    userComment: []
+	    userComment: [],
+	    recentPost: []
 	};
 
 	function showpost() {
@@ -3031,6 +3052,8 @@ webpackJsonp([0],[
 	            return _extends({}, state, {
 	                userComment: [].concat(_toConsumableArray(state.userComment), _toConsumableArray(action.sendComment))
 	            });
+	        case types.FETCH_RECENT_POST:
+	            return Object.assign({}, state, { recentPost: action.recentPost });
 	        default:
 	            return state;
 	    }
@@ -3072,6 +3095,40 @@ webpackJsonp([0],[
 
 /***/ },
 /* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = login;
+
+	var _ActionTypes = __webpack_require__(279);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var initialState = {
+	    isLogin: false
+	}; /**
+	    * Created by shen on 2017/2/15.
+	    */
+	function login() {
+	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+	    var action = arguments[1];
+
+	    switch (action.type) {
+	        case types.USER_LONGIN:
+	            return Object.assign({}, state, { isLogin: action.isLogin });
+	        default:
+	            return state;
+	    }
+	}
+
+/***/ },
+/* 284 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3099,7 +3156,7 @@ webpackJsonp([0],[
 	exports['default'] = thunk;
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3110,11 +3167,11 @@ webpackJsonp([0],[
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _core = __webpack_require__(285);
+	var _core = __webpack_require__(286);
 
-	var _helpers = __webpack_require__(286);
+	var _helpers = __webpack_require__(287);
 
-	var _defaults = __webpack_require__(289);
+	var _defaults = __webpack_require__(290);
 
 	var _defaults2 = _interopRequireDefault(_defaults);
 
@@ -3217,7 +3274,7 @@ webpackJsonp([0],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3230,9 +3287,9 @@ webpackJsonp([0],[
 
 	exports.printBuffer = printBuffer;
 
-	var _helpers = __webpack_require__(286);
+	var _helpers = __webpack_require__(287);
 
-	var _diff = __webpack_require__(287);
+	var _diff = __webpack_require__(288);
 
 	var _diff2 = _interopRequireDefault(_diff);
 
@@ -3359,7 +3416,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 286 */
+/* 287 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3383,7 +3440,7 @@ webpackJsonp([0],[
 	var timer = exports.timer = typeof performance !== "undefined" && performance !== null && typeof performance.now === "function" ? performance : Date;
 
 /***/ },
-/* 287 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3393,7 +3450,7 @@ webpackJsonp([0],[
 	});
 	exports.default = diffLogger;
 
-	var _deepDiff = __webpack_require__(288);
+	var _deepDiff = __webpack_require__(289);
 
 	var _deepDiff2 = _interopRequireDefault(_deepDiff);
 
@@ -3482,7 +3539,7 @@ webpackJsonp([0],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 288 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -3911,7 +3968,7 @@ webpackJsonp([0],[
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 289 */
+/* 290 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3962,16 +4019,16 @@ webpackJsonp([0],[
 	module.exports = exports["default"];
 
 /***/ },
-/* 290 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(291);
+	var content = __webpack_require__(292);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(293)(content, {});
+	var update = __webpack_require__(294)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -3988,21 +4045,21 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 291 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(292)();
+	exports = module.exports = __webpack_require__(293)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".flex {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex; }\n\n.flex-center {\n  -webkit-box-pack: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.navbar {\n  margin-bottom: 0; }\n", ""]);
+	exports.push([module.id, ".flex {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex; }\n\n.flex-center {\n  -webkit-box-pack: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex-column {\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex; }\n\n.flex-auto {\n  -webkit-box-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  overflow: scroll; }\n\n.panel {\n  margin-bottom: 0 !important; }\n\n.navbar-default {\n  background-color: transparent !important;\n  border-color: transparent !important; }\n\na:link {\n  text-decoration: none; }\n\na:visited {\n  text-decoration: none; }\n\na:hover {\n  text-decoration: none; }\n\na:active {\n  text-decoration: none; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports) {
 
 	/*
@@ -4058,7 +4115,7 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 293 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -4310,7 +4367,7 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 294 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4334,19 +4391,21 @@ webpackJsonp([0],[
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _connect = __webpack_require__(295);
+	var _connect = __webpack_require__(296);
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	var _home = __webpack_require__(303);
+	var _home = __webpack_require__(304);
 
 	var _home2 = _interopRequireDefault(_home);
 
-	var _reactRouter = __webpack_require__(179);
-
-	var _banner = __webpack_require__(305);
+	var _banner = __webpack_require__(306);
 
 	var _banner2 = _interopRequireDefault(_banner);
+
+	var _Nav = __webpack_require__(311);
+
+	var _Nav2 = _interopRequireDefault(_Nav);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4387,65 +4446,13 @@ webpackJsonp([0],[
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-
 	            var isLogin = this.props.isLogin;
 
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'Home' },
-	                _react2.default.createElement(
-	                    'nav',
-	                    { className: 'navbar navbar-inverse navbar-custom navbar-fixed-top' },
-	                    _react2.default.createElement(
-	                        'div',
-	                        { className: 'container-fluid' },
-	                        _react2.default.createElement(
-	                            'a',
-	                            { className: 'navbar-brand pull-left' },
-	                            '\u4E0A\u5584\u82E5\u6C34'
-	                        ),
-	                        _react2.default.createElement(
-	                            'ul',
-	                            { className: 'nav navbar-nav navbar-right' },
-	                            _react2.default.createElement(
-	                                'li',
-	                                { className: 'pull-right' },
-	                                isLogin ? _react2.default.createElement(
-	                                    'a',
-	                                    { href: '' },
-	                                    _react2.default.createElement(
-	                                        'span',
-	                                        { onClick: function onClick() {
-	                                                return _this2.userLogout();
-	                                            } },
-	                                        '\u5DF2\u767B\u5F55'
-	                                    )
-	                                ) : _react2.default.createElement(
-	                                    'a',
-	                                    null,
-	                                    _react2.default.createElement(
-	                                        'span',
-	                                        { onClick: function onClick() {
-	                                                return _this2.goToLogin();
-	                                            } },
-	                                        '\u767B\u5F55'
-	                                    )
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                'li',
-	                                { className: 'pull-right' },
-	                                _react2.default.createElement(
-	                                    _reactRouter.Link,
-	                                    { to: '/post?page=0' },
-	                                    '\u6211\u7684\u535A\u5BA2'
-	                                )
-	                            )
-	                        )
-	                    )
-	                ),
-	                _react2.default.createElement(_banner2.default, { title: '\u751F\u547D\u8BDA\u53EF\u8D35\uFF0Ccoding\u4EF7\u66F4\u9AD8' })
+	                _react2.default.createElement(_Nav2.default, { isLogin: isLogin, goToLogin: this.goToLogin, userLogout: this.userLogout }),
+	                _react2.default.createElement(_banner2.default, { title: '\u52AA\u529B\uFF0C\u594B\u6597' })
 	            );
 	        }
 	    }]);
@@ -4457,7 +4464,7 @@ webpackJsonp([0],[
 	exports.default = App;
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4470,30 +4477,26 @@ webpackJsonp([0],[
 
 	var _redux = __webpack_require__(244);
 
-	var _actions = __webpack_require__(296);
+	var _actions = __webpack_require__(297);
 
 	var actions = _interopRequireWildcard(_actions);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; } /**
-	                                                                                                                                                                                                                   * Created by shen on 2017/2/4.
-	                                                                                                                                                                                                                   */
-
-
 	function mapStateToProps(props, state) {
 	    if (!props) return state;
-
 	    if (typeof props === 'function') return props;
+	    //
+	    // if(typeof props === 'string') return {[props]: state[props]}
+	    //
+	    // if(Array.isArray(props)) {
+	    //     return props.reduce((prev, curr) => prev[curr] = state[curr], {})
+	    // }
+	    // return state
+	} /**
+	   * Created by shen on 2017/2/4.
+	   */
 
-	    if (typeof props === 'string') return _defineProperty({}, props, state[props]);
-
-	    if (Array.isArray(props)) {
-	        return props.reduce(function (prev, curr) {
-	            return prev[curr] = state[curr];
-	        }, {});
-	    }
-	}
 
 	function mapDispatchToProps(dispatch) {
 	    return {
@@ -4508,7 +4511,7 @@ webpackJsonp([0],[
 	};
 
 /***/ },
-/* 296 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4517,7 +4520,7 @@ webpackJsonp([0],[
 	  value: true
 	});
 
-	var _home = __webpack_require__(297);
+	var _home = __webpack_require__(298);
 
 	Object.keys(_home).forEach(function (key) {
 	  if (key === "default" || key === "__esModule") return;
@@ -4529,7 +4532,7 @@ webpackJsonp([0],[
 	  });
 	});
 
-	var _login = __webpack_require__(299);
+	var _login = __webpack_require__(300);
 
 	Object.keys(_login).forEach(function (key) {
 	  if (key === "default" || key === "__esModule") return;
@@ -4541,7 +4544,7 @@ webpackJsonp([0],[
 	  });
 	});
 
-	var _editpost = __webpack_require__(300);
+	var _editpost = __webpack_require__(301);
 
 	Object.keys(_editpost).forEach(function (key) {
 	  if (key === "default" || key === "__esModule") return;
@@ -4553,7 +4556,7 @@ webpackJsonp([0],[
 	  });
 	});
 
-	var _post = __webpack_require__(301);
+	var _post = __webpack_require__(302);
 
 	Object.keys(_post).forEach(function (key) {
 	  if (key === "default" || key === "__esModule") return;
@@ -4565,7 +4568,7 @@ webpackJsonp([0],[
 	  });
 	});
 
-	var _showpost = __webpack_require__(302);
+	var _showpost = __webpack_require__(303);
 
 	Object.keys(_showpost).forEach(function (key) {
 	  if (key === "default" || key === "__esModule") return;
@@ -4578,7 +4581,7 @@ webpackJsonp([0],[
 	});
 
 /***/ },
-/* 297 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4593,7 +4596,7 @@ webpackJsonp([0],[
 
 	var types = _interopRequireWildcard(_ActionTypes);
 
-	var _request = __webpack_require__(298);
+	var _request = __webpack_require__(299);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -4625,7 +4628,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 298 */
+/* 299 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4689,7 +4692,7 @@ webpackJsonp([0],[
 	exports.POST = POST;
 
 /***/ },
-/* 299 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4709,13 +4712,17 @@ webpackJsonp([0],[
 
 	var types = _interopRequireWildcard(_ActionTypes);
 
-	var _request = __webpack_require__(298);
+	var _request = __webpack_require__(299);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function sendUserLogin(params) {
 	    return function (dispatch, getState) {
 	        return new _request.POST('/login', _extends({}, params)).send().then(function (resp) {
+	            dispatch({
+	                type: types.USER_LONGIN,
+	                isLogin: resp.isLogin
+	            });
 	            return resp;
 	        }).catch(function (err) {
 	            throw err;
@@ -4724,7 +4731,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 300 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4746,7 +4753,7 @@ webpackJsonp([0],[
 
 	var types = _interopRequireWildcard(_ActionTypes);
 
-	var _request = __webpack_require__(298);
+	var _request = __webpack_require__(299);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -4780,7 +4787,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 301 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4797,7 +4804,7 @@ webpackJsonp([0],[
 
 	var types = _interopRequireWildcard(_ActionTypes);
 
-	var _request = __webpack_require__(298);
+	var _request = __webpack_require__(299);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -4827,7 +4834,10 @@ webpackJsonp([0],[
 	function deletePost(id) {
 	    return function (dispatch, getState) {
 	        return new _request.POST('/delete', { _id: id }).send().then(function (resp) {
-	            return resp;
+	            dispatch({
+	                type: types.DELETE_POST,
+	                deleteId: id
+	            });
 	        });
 	    };
 	}
@@ -4854,7 +4864,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 302 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4871,12 +4881,13 @@ webpackJsonp([0],[
 	exports.fetchSinglePost = fetchSinglePost;
 	exports.userSendComment = userSendComment;
 	exports.fetchUserComment = fetchUserComment;
+	exports.fetchRecentPost = fetchRecentPost;
 
 	var _ActionTypes = __webpack_require__(279);
 
 	var types = _interopRequireWildcard(_ActionTypes);
 
-	var _request = __webpack_require__(298);
+	var _request = __webpack_require__(299);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -4918,8 +4929,19 @@ webpackJsonp([0],[
 	    };
 	}
 
+	function fetchRecentPost() {
+	    return function (dispatch, getState) {
+	        return new _request.GET('/recentPost').send().then(function (resp) {
+	            dispatch({
+	                type: types.FETCH_RECENT_POST,
+	                recentPost: resp
+	            });
+	        });
+	    };
+	}
+
 /***/ },
-/* 303 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4928,7 +4950,7 @@ webpackJsonp([0],[
 	    value: true
 	});
 
-	var _reselect = __webpack_require__(304);
+	var _reselect = __webpack_require__(305);
 
 	var getHomeLogin = function getHomeLogin(state) {
 	    return state.home.isLogin;
@@ -4942,7 +4964,7 @@ webpackJsonp([0],[
 	});
 
 /***/ },
-/* 304 */
+/* 305 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5058,7 +5080,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 305 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5071,13 +5093,14 @@ webpackJsonp([0],[
 
 	var _react2 = _interopRequireDefault(_react);
 
-	__webpack_require__(306);
+	var _fecha = __webpack_require__(307);
+
+	var _fecha2 = _interopRequireDefault(_fecha);
+
+	__webpack_require__(308);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/**
-	 * Created by shen on 2017/2/13.
-	 */
 	exports.default = function (_ref) {
 	    var title = _ref.title,
 	        time = _ref.time;
@@ -5105,26 +5128,367 @@ webpackJsonp([0],[
 	                        time ? _react2.default.createElement(
 	                            'h2',
 	                            { className: 'ShowPost__Title__Text' },
-	                            time
+	                            _fecha2.default.format(new Date(time), 'YYYY年MM月DD日')
 	                        ) : null
 	                    )
 	                )
 	            )
 	        )
 	    );
-	};
+	}; /**
+	    * Created by shen on 2017/2/13.
+	    */
 
 /***/ },
-/* 306 */
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;(function (main) {
+	  'use strict';
+
+	  /**
+	   * Parse or format dates
+	   * @class fecha
+	   */
+	  var fecha = {};
+	  var token = /d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+	  var twoDigits = /\d\d?/;
+	  var threeDigits = /\d{3}/;
+	  var fourDigits = /\d{4}/;
+	  var word = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+	  var literal = /\[([^]*?)\]/gm;
+	  var noop = function () {
+	  };
+
+	  function shorten(arr, sLen) {
+	    var newArr = [];
+	    for (var i = 0, len = arr.length; i < len; i++) {
+	      newArr.push(arr[i].substr(0, sLen));
+	    }
+	    return newArr;
+	  }
+
+	  function monthUpdate(arrName) {
+	    return function (d, v, i18n) {
+	      var index = i18n[arrName].indexOf(v.charAt(0).toUpperCase() + v.substr(1).toLowerCase());
+	      if (~index) {
+	        d.month = index;
+	      }
+	    };
+	  }
+
+	  function pad(val, len) {
+	    val = String(val);
+	    len = len || 2;
+	    while (val.length < len) {
+	      val = '0' + val;
+	    }
+	    return val;
+	  }
+
+	  var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	  var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+	  var monthNamesShort = shorten(monthNames, 3);
+	  var dayNamesShort = shorten(dayNames, 3);
+	  fecha.i18n = {
+	    dayNamesShort: dayNamesShort,
+	    dayNames: dayNames,
+	    monthNamesShort: monthNamesShort,
+	    monthNames: monthNames,
+	    amPm: ['am', 'pm'],
+	    DoFn: function DoFn(D) {
+	      return D + ['th', 'st', 'nd', 'rd'][D % 10 > 3 ? 0 : (D - D % 10 !== 10) * D % 10];
+	    }
+	  };
+
+	  var formatFlags = {
+	    D: function(dateObj) {
+	      return dateObj.getDate();
+	    },
+	    DD: function(dateObj) {
+	      return pad(dateObj.getDate());
+	    },
+	    Do: function(dateObj, i18n) {
+	      return i18n.DoFn(dateObj.getDate());
+	    },
+	    d: function(dateObj) {
+	      return dateObj.getDay();
+	    },
+	    dd: function(dateObj) {
+	      return pad(dateObj.getDay());
+	    },
+	    ddd: function(dateObj, i18n) {
+	      return i18n.dayNamesShort[dateObj.getDay()];
+	    },
+	    dddd: function(dateObj, i18n) {
+	      return i18n.dayNames[dateObj.getDay()];
+	    },
+	    M: function(dateObj) {
+	      return dateObj.getMonth() + 1;
+	    },
+	    MM: function(dateObj) {
+	      return pad(dateObj.getMonth() + 1);
+	    },
+	    MMM: function(dateObj, i18n) {
+	      return i18n.monthNamesShort[dateObj.getMonth()];
+	    },
+	    MMMM: function(dateObj, i18n) {
+	      return i18n.monthNames[dateObj.getMonth()];
+	    },
+	    YY: function(dateObj) {
+	      return String(dateObj.getFullYear()).substr(2);
+	    },
+	    YYYY: function(dateObj) {
+	      return dateObj.getFullYear();
+	    },
+	    h: function(dateObj) {
+	      return dateObj.getHours() % 12 || 12;
+	    },
+	    hh: function(dateObj) {
+	      return pad(dateObj.getHours() % 12 || 12);
+	    },
+	    H: function(dateObj) {
+	      return dateObj.getHours();
+	    },
+	    HH: function(dateObj) {
+	      return pad(dateObj.getHours());
+	    },
+	    m: function(dateObj) {
+	      return dateObj.getMinutes();
+	    },
+	    mm: function(dateObj) {
+	      return pad(dateObj.getMinutes());
+	    },
+	    s: function(dateObj) {
+	      return dateObj.getSeconds();
+	    },
+	    ss: function(dateObj) {
+	      return pad(dateObj.getSeconds());
+	    },
+	    S: function(dateObj) {
+	      return Math.round(dateObj.getMilliseconds() / 100);
+	    },
+	    SS: function(dateObj) {
+	      return pad(Math.round(dateObj.getMilliseconds() / 10), 2);
+	    },
+	    SSS: function(dateObj) {
+	      return pad(dateObj.getMilliseconds(), 3);
+	    },
+	    a: function(dateObj, i18n) {
+	      return dateObj.getHours() < 12 ? i18n.amPm[0] : i18n.amPm[1];
+	    },
+	    A: function(dateObj, i18n) {
+	      return dateObj.getHours() < 12 ? i18n.amPm[0].toUpperCase() : i18n.amPm[1].toUpperCase();
+	    },
+	    ZZ: function(dateObj) {
+	      var o = dateObj.getTimezoneOffset();
+	      return (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4);
+	    }
+	  };
+
+	  var parseFlags = {
+	    D: [twoDigits, function (d, v) {
+	      d.day = v;
+	    }],
+	    Do: [new RegExp(twoDigits.source + word.source), function (d, v) {
+	      d.day = parseInt(v, 10);
+	    }],
+	    M: [twoDigits, function (d, v) {
+	      d.month = v - 1;
+	    }],
+	    YY: [twoDigits, function (d, v) {
+	      var da = new Date(), cent = +('' + da.getFullYear()).substr(0, 2);
+	      d.year = '' + (v > 68 ? cent - 1 : cent) + v;
+	    }],
+	    h: [twoDigits, function (d, v) {
+	      d.hour = v;
+	    }],
+	    m: [twoDigits, function (d, v) {
+	      d.minute = v;
+	    }],
+	    s: [twoDigits, function (d, v) {
+	      d.second = v;
+	    }],
+	    YYYY: [fourDigits, function (d, v) {
+	      d.year = v;
+	    }],
+	    S: [/\d/, function (d, v) {
+	      d.millisecond = v * 100;
+	    }],
+	    SS: [/\d{2}/, function (d, v) {
+	      d.millisecond = v * 10;
+	    }],
+	    SSS: [threeDigits, function (d, v) {
+	      d.millisecond = v;
+	    }],
+	    d: [twoDigits, noop],
+	    ddd: [word, noop],
+	    MMM: [word, monthUpdate('monthNamesShort')],
+	    MMMM: [word, monthUpdate('monthNames')],
+	    a: [word, function (d, v, i18n) {
+	      var val = v.toLowerCase();
+	      if (val === i18n.amPm[0]) {
+	        d.isPm = false;
+	      } else if (val === i18n.amPm[1]) {
+	        d.isPm = true;
+	      }
+	    }],
+	    ZZ: [/[\+\-]\d\d:?\d\d/, function (d, v) {
+	      var parts = (v + '').match(/([\+\-]|\d\d)/gi), minutes;
+
+	      if (parts) {
+	        minutes = +(parts[1] * 60) + parseInt(parts[2], 10);
+	        d.timezoneOffset = parts[0] === '+' ? minutes : -minutes;
+	      }
+	    }]
+	  };
+	  parseFlags.dd = parseFlags.d;
+	  parseFlags.dddd = parseFlags.ddd;
+	  parseFlags.DD = parseFlags.D;
+	  parseFlags.mm = parseFlags.m;
+	  parseFlags.hh = parseFlags.H = parseFlags.HH = parseFlags.h;
+	  parseFlags.MM = parseFlags.M;
+	  parseFlags.ss = parseFlags.s;
+	  parseFlags.A = parseFlags.a;
+
+
+	  // Some common format strings
+	  fecha.masks = {
+	    'default': 'ddd MMM DD YYYY HH:mm:ss',
+	    shortDate: 'M/D/YY',
+	    mediumDate: 'MMM D, YYYY',
+	    longDate: 'MMMM D, YYYY',
+	    fullDate: 'dddd, MMMM D, YYYY',
+	    shortTime: 'HH:mm',
+	    mediumTime: 'HH:mm:ss',
+	    longTime: 'HH:mm:ss.SSS'
+	  };
+
+	  /***
+	   * Format a date
+	   * @method format
+	   * @param {Date|number} dateObj
+	   * @param {string} mask Format of the date, i.e. 'mm-dd-yy' or 'shortDate'
+	   */
+	  fecha.format = function (dateObj, mask, i18nSettings) {
+	    var i18n = i18nSettings || fecha.i18n;
+
+	    if (typeof dateObj === 'number') {
+	      dateObj = new Date(dateObj);
+	    }
+
+	    if (Object.prototype.toString.call(dateObj) !== '[object Date]' || isNaN(dateObj.getTime())) {
+	      throw new Error('Invalid Date in fecha.format');
+	    }
+
+	    mask = fecha.masks[mask] || mask || fecha.masks['default'];
+
+	    var literals = [];
+
+	    // Make literals inactive by replacing them with ??
+	    mask = mask.replace(literal, function($0, $1) {
+	      literals.push($1);
+	      return '??';
+	    });
+	    // Apply formatting rules
+	    mask = mask.replace(token, function ($0) {
+	      return $0 in formatFlags ? formatFlags[$0](dateObj, i18n) : $0.slice(1, $0.length - 1);
+	    });
+	    // Inline literal values back into the formatted value
+	    return mask.replace(/\?\?/g, function() {
+	      return literals.shift();
+	    });
+	  };
+
+	  /**
+	   * Parse a date string into an object, changes - into /
+	   * @method parse
+	   * @param {string} dateStr Date string
+	   * @param {string} format Date parse format
+	   * @returns {Date|boolean}
+	   */
+	  fecha.parse = function (dateStr, format, i18nSettings) {
+	    var i18n = i18nSettings || fecha.i18n;
+
+	    if (typeof format !== 'string') {
+	      throw new Error('Invalid format in fecha.parse');
+	    }
+
+	    format = fecha.masks[format] || format;
+
+	    // Avoid regular expression denial of service, fail early for really long strings
+	    // https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
+	    if (dateStr.length > 1000) {
+	      return false;
+	    }
+
+	    var isValid = true;
+	    var dateInfo = {};
+	    format.replace(token, function ($0) {
+	      if (parseFlags[$0]) {
+	        var info = parseFlags[$0];
+	        var index = dateStr.search(info[0]);
+	        if (!~index) {
+	          isValid = false;
+	        } else {
+	          dateStr.replace(info[0], function (result) {
+	            info[1](dateInfo, result, i18n);
+	            dateStr = dateStr.substr(index + result.length);
+	            return result;
+	          });
+	        }
+	      }
+
+	      return parseFlags[$0] ? '' : $0.slice(1, $0.length - 1);
+	    });
+
+	    if (!isValid) {
+	      return false;
+	    }
+
+	    var today = new Date();
+	    if (dateInfo.isPm === true && dateInfo.hour != null && +dateInfo.hour !== 12) {
+	      dateInfo.hour = +dateInfo.hour + 12;
+	    } else if (dateInfo.isPm === false && +dateInfo.hour === 12) {
+	      dateInfo.hour = 0;
+	    }
+
+	    var date;
+	    if (dateInfo.timezoneOffset != null) {
+	      dateInfo.minute = +(dateInfo.minute || 0) - +dateInfo.timezoneOffset;
+	      date = new Date(Date.UTC(dateInfo.year || today.getFullYear(), dateInfo.month || 0, dateInfo.day || 1,
+	        dateInfo.hour || 0, dateInfo.minute || 0, dateInfo.second || 0, dateInfo.millisecond || 0));
+	    } else {
+	      date = new Date(dateInfo.year || today.getFullYear(), dateInfo.month || 0, dateInfo.day || 1,
+	        dateInfo.hour || 0, dateInfo.minute || 0, dateInfo.second || 0, dateInfo.millisecond || 0);
+	    }
+	    return date;
+	  };
+
+	  /* istanbul ignore next */
+	  if (typeof module !== 'undefined' && module.exports) {
+	    module.exports = fecha;
+	  } else if (true) {
+	    !(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	      return fecha;
+	    }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else {
+	    main.fecha = fecha;
+	  }
+	})(this);
+
+
+/***/ },
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(307);
+	var content = __webpack_require__(309);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(293)(content, {});
+	var update = __webpack_require__(294)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5141,27 +5505,141 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 307 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(292)();
+	exports = module.exports = __webpack_require__(293)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(308) + ") no-repeat;\n  background-size: cover; }\n  .Banner .post-heading {\n    padding: 85px 0 55px; }\n", ""]);
+	exports.push([module.id, ".Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(310) + ") no-repeat;\n  background-size: cover; }\n  .Banner .post-heading {\n    padding: 85px 0 55px; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 308 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "a0089296d1a34bc0a5e72701efe004e0.jpg";
 
 /***/ },
-/* 309 */
+/* 311 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _reactRouter = __webpack_require__(179);
+
+	var _react = __webpack_require__(178);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	__webpack_require__(312);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (_ref) {
+	    var isLogin = _ref.isLogin,
+	        userLogout = _ref.userLogout,
+	        goToLogin = _ref.goToLogin;
+
+	    return _react2.default.createElement(
+	        'nav',
+	        { className: 'navbar navbar-default navbar-custom Nav' },
+	        _react2.default.createElement(
+	            'div',
+	            { className: 'container-fluid' },
+	            _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: '/', className: 'navbar-brand pull-left' },
+	                '\u4E0A\u5584\u82E5\u6C34'
+	            ),
+	            _react2.default.createElement(
+	                'ul',
+	                { className: 'nav navbar-nav navbar-right' },
+	                _react2.default.createElement(
+	                    'li',
+	                    { className: 'pull-right' },
+	                    isLogin ? _react2.default.createElement(
+	                        'a',
+	                        { href: '' },
+	                        _react2.default.createElement(
+	                            'span',
+	                            { onClick: function onClick() {
+	                                    return userLogout();
+	                                } },
+	                            '\u5DF2\u767B\u5F55'
+	                        )
+	                    ) : _react2.default.createElement(
+	                        _reactRouter.Link,
+	                        { to: '/login' },
+	                        '\u767B\u5F55'
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'li',
+	                    { className: 'pull-right' },
+	                    _react2.default.createElement(
+	                        _reactRouter.Link,
+	                        { to: '/post?page=0' },
+	                        '\u6211\u7684\u535A\u5BA2'
+	                    )
+	                )
+	            )
+	        )
+	    );
+	}; /**
+	    * Created by shen on 2017/2/16.
+	    */
+
+/***/ },
+/* 312 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(313);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(294)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/sass-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js!./nav.scss", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/sass-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js!./nav.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 313 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(293)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".Nav {\n  position: absolute;\n  top: 0;\n  width: 100%;\n  z-index: 99; }\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5184,15 +5662,19 @@ webpackJsonp([0],[
 
 	var _reactRouter = __webpack_require__(179);
 
-	var _post = __webpack_require__(310);
+	var _post = __webpack_require__(315);
 
 	var _post2 = _interopRequireDefault(_post);
 
-	var _connect = __webpack_require__(295);
+	var _connect = __webpack_require__(296);
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	__webpack_require__(311);
+	__webpack_require__(316);
+
+	var _fecha = __webpack_require__(307);
+
+	var _fecha2 = _interopRequireDefault(_fecha);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5215,6 +5697,7 @@ webpackJsonp([0],[
 	        var _this = _possibleConstructorReturn(this, (_ref = Post.__proto__ || Object.getPrototypeOf(Post)).call.apply(_ref, [this].concat(_toConsumableArray(args))));
 
 	        _this.goToEitPost = function () {
+	            console.log('1', _this.props.isLogin);
 	            if (_this.props.isLogin) {
 	                _this.context.router.push('/editpost');
 	                return;
@@ -5243,16 +5726,7 @@ webpackJsonp([0],[
 	        };
 
 	        _this.deletePost = function (_id) {
-	            _this.props.actions.deletePost(_id).then(function (resp) {
-	                _this.state.postList.map(function (item, index) {
-	                    if (item._id === _id) {
-	                        _this.state.postList.splice(index, 1);
-	                        _this.setState({
-	                            postList: _this.state.postList
-	                        });
-	                    }
-	                });
-	            });
+	            _this.props.actions.deletePost(_id);
 	        };
 
 	        _this.findAssignPost = function () {
@@ -5297,6 +5771,7 @@ webpackJsonp([0],[
 	                postList = _props.postList,
 	                isLogin = _props.isLogin;
 
+
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'Post' },
@@ -5328,7 +5803,7 @@ webpackJsonp([0],[
 	                                        )
 	                                    )
 	                                ),
-	                                _react2.default.createElement(
+	                                isLogin && _react2.default.createElement(
 	                                    'button',
 	                                    { className: 'btn btn-success col-md-1 col-xs-3 col-md-offset-6', onClick: function onClick() {
 	                                            return _this2.goToEitPost();
@@ -5376,9 +5851,8 @@ webpackJsonp([0],[
 	                                    _react2.default.createElement(
 	                                        'span',
 	                                        null,
-	                                        '(',
-	                                        item.postTime,
-	                                        ')'
+	                                        'shen by ',
+	                                        _fecha2.default.format(new Date(item.postTime), 'YYYY年MM月DD日')
 	                                    )
 	                                );
 	                            }) : '没有找到该文章' : null,
@@ -5400,12 +5874,12 @@ webpackJsonp([0],[
 	                                        ),
 	                                        isLogin ? _react2.default.createElement(
 	                                            _reactRouter.Link,
-	                                            { to: '/editpost?postId=' + item._id, style: { marginRight: '5px' } },
+	                                            { className: 'label label-success', to: '/editpost?postId=' + item._id, style: { marginRight: '5px' } },
 	                                            '\u7F16\u8F91'
 	                                        ) : null,
 	                                        isLogin ? _react2.default.createElement(
 	                                            'span',
-	                                            { onClick: function onClick() {
+	                                            { className: 'label label-warning', onClick: function onClick() {
 	                                                    return _this2.deletePost(item._id);
 	                                                } },
 	                                            '\u5220\u9664'
@@ -5414,7 +5888,7 @@ webpackJsonp([0],[
 	                                            'p',
 	                                            null,
 	                                            'shen by ',
-	                                            item.postTime
+	                                            _fecha2.default.format(new Date(item.postTime), 'YYYY年MM月DD日')
 	                                        )
 	                                    );
 	                                })
@@ -5476,7 +5950,7 @@ webpackJsonp([0],[
 	exports.default = Post;
 
 /***/ },
-/* 310 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5485,7 +5959,7 @@ webpackJsonp([0],[
 	    value: true
 	});
 
-	var _reselect = __webpack_require__(304);
+	var _reselect = __webpack_require__(305);
 
 	var getPostList = function getPostList(state) {
 	    return state.post.postList;
@@ -5517,16 +5991,16 @@ webpackJsonp([0],[
 	});
 
 /***/ },
-/* 311 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(312);
+	var content = __webpack_require__(317);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(293)(content, {});
+	var update = __webpack_require__(294)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5543,10 +6017,10 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 312 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(292)();
+	exports = module.exports = __webpack_require__(293)();
 	// imports
 
 
@@ -5557,7 +6031,7 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 313 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5578,11 +6052,11 @@ webpackJsonp([0],[
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _connect = __webpack_require__(295);
+	var _connect = __webpack_require__(296);
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	__webpack_require__(314);
+	__webpack_require__(319);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5616,6 +6090,7 @@ webpackJsonp([0],[
 	                password: password.value
 	            };
 	            _this.props.actions.sendUserLogin(params).then(function (resp) {
+	                console.log('resp', resp);
 	                if (resp.code === '200') {
 	                    _this.context.router.goBack();
 	                } else {
@@ -5641,7 +6116,7 @@ webpackJsonp([0],[
 	                        { className: 'form row' },
 	                        _react2.default.createElement(
 	                            'div',
-	                            { className: 'form-horizontal col-sm-offset-3 col-md-offset-3' },
+	                            { className: 'form-horizontal' },
 	                            _react2.default.createElement(
 	                                'h3',
 	                                { className: 'form-title' },
@@ -5649,22 +6124,22 @@ webpackJsonp([0],[
 	                            ),
 	                            _react2.default.createElement(
 	                                'div',
-	                                { className: 'col-sm-9 col-md-9' },
+	                                null,
 	                                _react2.default.createElement(
 	                                    'div',
-	                                    { className: 'form-group' },
+	                                    { className: 'form-item' },
 	                                    _react2.default.createElement('i', { className: 'fa fa-user fa-lg' }),
 	                                    _react2.default.createElement('input', { type: 'text', placeholder: '\u7528\u6237\u540D', ref: 'username', className: 'form-control required' })
 	                                ),
 	                                _react2.default.createElement(
 	                                    'div',
-	                                    { className: 'form-group' },
+	                                    { className: 'form-item' },
 	                                    _react2.default.createElement('i', { className: 'fa fa-lock fa-lg' }),
 	                                    _react2.default.createElement('input', { type: 'password', placeholder: '\u5BC6\u7801', ref: 'password', className: 'form-control required' })
 	                                ),
 	                                _react2.default.createElement(
 	                                    'div',
-	                                    { className: 'form-group' },
+	                                    { className: 'form-item' },
 	                                    _react2.default.createElement(
 	                                        'button',
 	                                        { onClick: function onClick() {
@@ -5688,16 +6163,16 @@ webpackJsonp([0],[
 	exports.default = Login;
 
 /***/ },
-/* 314 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(315);
+	var content = __webpack_require__(320);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(293)(content, {});
+	var update = __webpack_require__(294)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5714,27 +6189,27 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 315 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(292)();
+	exports = module.exports = __webpack_require__(293)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".Login {\n  height: 100%;\n  background: url(" + __webpack_require__(316) + ") no-repeat;\n  background-size: cover;\n  font-size: 16px; }\n  .Login .form {\n    background: rgba(255, 255, 255, 0.2);\n    width: 400px;\n    margin: 100px auto; }\n", ""]);
+	exports.push([module.id, ".Login {\n  height: 100%;\n  background: url(" + __webpack_require__(321) + ") no-repeat;\n  background-size: cover;\n  font-size: 16px; }\n  .Login .form {\n    background: rgba(255, 255, 255, 0.2);\n    max-width: 400px;\n    margin: 100px auto;\n    padding: 10px; }\n  .Login .form-item {\n    margin-bottom: 15px; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 316 */
+/* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "05c59e2903b7491b6bccb9277fdaee71.jpg";
 
 /***/ },
-/* 317 */
+/* 322 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5755,15 +6230,15 @@ webpackJsonp([0],[
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _connect = __webpack_require__(295);
+	var _connect = __webpack_require__(296);
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	var _editpost = __webpack_require__(318);
+	var _editpost = __webpack_require__(323);
 
 	var _editpost2 = _interopRequireDefault(_editpost);
 
-	__webpack_require__(319);
+	__webpack_require__(324);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5787,7 +6262,33 @@ webpackJsonp([0],[
 	            args[_key] = arguments[_key];
 	        }
 
-	        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = EditPost.__proto__ || Object.getPrototypeOf(EditPost)).call.apply(_ref, [this].concat(args))), _this), _this.commonPost = function () {
+	        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = EditPost.__proto__ || Object.getPrototypeOf(EditPost)).call.apply(_ref, [this].concat(args))), _this), _this.addTabText = function () {
+	            var content = _this.refs.content;
+
+	            content.addEventListener('keydown', function (e) {
+	                var keyCode = e.keyCode;
+	                if (keyCode == 9) {
+	                    var start = content.selectionStart,
+	                        end = content.selectionEnd,
+	                        value = content.value;
+	                    if (start == end) {
+	                        content.value = value.substring(0, start) + '\t' + value.substring(end);
+	                        content.selectionStart = content.selectionEnd = start + 1;
+	                    } else {
+	                        var lineStart = value.lastIndexOf('\n', start);
+	                        var lineEnd = value.lastIndexOf('\n', end);
+	                        var lines = value.substring(lineStart, lineEnd).split(/\n/);
+	                        var offset = lines.length;
+	                        console.log('lines', lines);
+	                        var l = '\t' + lines.join('\n\t');
+	                        content.value = value.substr(0, lineStart) + l + value.substr(lineEnd);
+	                        content.selectionStart = start + 1;
+	                        content.selectionEnd = end + offset;
+	                    }
+	                    e.preventDefault();
+	                }
+	            });
+	        }, _this.commonPost = function () {
 	            var _this$refs = _this.refs,
 	                title = _this$refs.title,
 	                content = _this$refs.content;
@@ -5796,16 +6297,12 @@ webpackJsonp([0],[
 	                alert('请输入完整信息');
 	                return;
 	            }
-	            var date = new Date();
-	            var y = date.getFullYear();
-	            var m = date.getMonth() + 1;
-	            var d = date.getDate();
 
 	            return {
 	                title: title.value,
 	                content: content.value,
 	                author: 'shen',
-	                postTime: y + '\u5E74' + m + '\u6708' + d + '\u65E5',
+	                postTime: new Date().getTime(),
 	                type: 'post'
 	            };
 	        }, _this.sendPost = function () {
@@ -5832,6 +6329,7 @@ webpackJsonp([0],[
 	            var _this2 = this;
 
 	            var query = this.context.router.location.query.postId;
+	            this.addTabText();
 	            if (!query) return;
 	            this.props.actions.fetchNaturePost(query).then(function () {
 	                var naturePost = _this2.props.naturePost;
@@ -5850,31 +6348,38 @@ webpackJsonp([0],[
 
 	            var naturePost = this.props.naturePost;
 
-
 	            return _react2.default.createElement(
 	                'div',
-	                { className: 'EditPost panel panel-info' },
+	                { className: 'EditPost panel panel-info flex-column' },
 	                _react2.default.createElement(
 	                    'header',
 	                    { className: 'panel-heading' },
-	                    _react2.default.createElement('input', { className: 'panel-title', type: 'text', placeholder: '\u6587\u7AE0\u6807\u9898', ref: 'title' }),
-	                    naturePost._id ? _react2.default.createElement(
-	                        'span',
-	                        { className: 'btn btn-success pull-right', onClick: function onClick() {
-	                                return _this3.editPost(naturePost._id);
-	                            } },
-	                        '\u7F16\u8F91\u6587\u7AE0'
-	                    ) : _react2.default.createElement(
-	                        'span',
-	                        { className: 'btn btn-success pull-right', onClick: function onClick() {
-	                                return _this3.sendPost();
-	                            } },
-	                        '\u53D1\u8868\u6587\u7AE0'
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'container' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'row' },
+	                            _react2.default.createElement('input', { className: 'panel-title col-md-8', type: 'text', placeholder: '\u6587\u7AE0\u6807\u9898', ref: 'title' }),
+	                            naturePost._id ? _react2.default.createElement(
+	                                'span',
+	                                { className: 'btn btn-success pull-right col-md-2', onClick: function onClick() {
+	                                        return _this3.editPost(naturePost._id);
+	                                    } },
+	                                '\u7F16\u8F91\u6587\u7AE0'
+	                            ) : _react2.default.createElement(
+	                                'span',
+	                                { className: 'btn btn-success pull-right col-md-2', onClick: function onClick() {
+	                                        return _this3.sendPost();
+	                                    } },
+	                                '\u53D1\u8868\u6587\u7AE0'
+	                            )
+	                        )
 	                    )
 	                ),
 	                _react2.default.createElement(
 	                    'section',
-	                    { className: 'panel-body' },
+	                    { className: 'panel-body flex-auto' },
 	                    _react2.default.createElement('textarea', { className: 'EditPost__PostHeight container', ref: 'content' })
 	                )
 	            );
@@ -5888,7 +6393,7 @@ webpackJsonp([0],[
 	exports.default = EditPost;
 
 /***/ },
-/* 318 */
+/* 323 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5897,7 +6402,7 @@ webpackJsonp([0],[
 	    value: true
 	});
 
-	var _reselect = __webpack_require__(304);
+	var _reselect = __webpack_require__(305);
 
 	var getNaturePost = function getNaturePost(state) {
 	    return state.editPost.naturePost;
@@ -5912,16 +6417,16 @@ webpackJsonp([0],[
 	});
 
 /***/ },
-/* 319 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(320);
+	var content = __webpack_require__(325);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(293)(content, {});
+	var update = __webpack_require__(294)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5938,21 +6443,21 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 320 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(292)();
+	exports = module.exports = __webpack_require__(293)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".EditPost__PostHeight {\n  height: 600px;\n  width: 100%; }\n", ""]);
+	exports.push([module.id, ".EditPost {\n  height: 100%; }\n  .EditPost__PostHeight {\n    overflow: scroll;\n    height: 550px;\n    width: 100%; }\n  .EditPost .test {\n    overflow: scroll; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 321 */
+/* 326 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5964,30 +6469,40 @@ webpackJsonp([0],[
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _dec, _class; /**
-	                   * Created by shen on 2017/2/7.
-	                   */
+	var _dec, _class, _class2, _temp; /**
+	                                   * Created by shen on 2017/2/7.
+	                                   */
 
 
 	var _react = __webpack_require__(178);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(179);
-
-	var _showpost = __webpack_require__(322);
+	var _showpost = __webpack_require__(327);
 
 	var _showpost2 = _interopRequireDefault(_showpost);
 
-	var _connect = __webpack_require__(295);
+	var _connect = __webpack_require__(296);
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	__webpack_require__(323);
+	__webpack_require__(328);
 
-	var _banner = __webpack_require__(305);
+	var _banner = __webpack_require__(306);
 
 	var _banner2 = _interopRequireDefault(_banner);
+
+	var _Nav = __webpack_require__(311);
+
+	var _Nav2 = _interopRequireDefault(_Nav);
+
+	var _fecha = __webpack_require__(307);
+
+	var _fecha2 = _interopRequireDefault(_fecha);
+
+	var _RecentPost = __webpack_require__(330);
+
+	var _RecentPost2 = _interopRequireDefault(_RecentPost);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5999,7 +6514,7 @@ webpackJsonp([0],[
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ShowPost = (_dec = (0, _connect2.default)(_showpost2.default), _dec(_class = function (_React$Component) {
+	var ShowPost = (_dec = (0, _connect2.default)(_showpost2.default), _dec(_class = (_temp = _class2 = function (_React$Component) {
 	    _inherits(ShowPost, _React$Component);
 
 	    function ShowPost(args) {
@@ -6009,18 +6524,18 @@ webpackJsonp([0],[
 
 	        var _this = _possibleConstructorReturn(this, (_ref = ShowPost.__proto__ || Object.getPrototypeOf(ShowPost)).call.apply(_ref, [this].concat(_toConsumableArray(args))));
 
+	        _this.fetchSinglePost = function (id) {
+	            _this.props.actions.fetchSinglePost(id);
+	        };
+
 	        _this.sendComment = function (_id) {
 	            var userComment = _this.refs.userComment;
 
-	            var date = new Date();
-	            var y = date.getFullYear();
-	            var m = date.getMonth() + 1;
-	            var d = date.getDay();
 
 	            var params = {
 	                commentName: '游客',
 	                commentContent: userComment.value,
-	                commentTime: y + '\u5E74' + m + '\u6708' + d + '\u65E5',
+	                commentTime: new Date().getTime(),
 	                type: 'comment' + _id
 	            };
 	            _this.props.actions.userSendComment(params).then(function (resp) {
@@ -6037,8 +6552,16 @@ webpackJsonp([0],[
 	            var post_id = this.props.params.post_id;
 
 
-	            this.props.actions.fetchSinglePost(post_id);
+	            this.fetchSinglePost(post_id);
 	            this.props.actions.fetchUserComment(post_id);
+	            this.props.actions.fetchRecentPost();
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (nextProps.params.post_id !== this.props.params.post_id) {
+	                this.fetchSinglePost(nextProps.params.post_id);
+	            }
 	        }
 	    }, {
 	        key: 'render',
@@ -6047,23 +6570,31 @@ webpackJsonp([0],[
 
 	            var _props = this.props,
 	                singlePost = _props.singlePost,
-	                userComment = _props.userComment;
+	                userComment = _props.userComment,
+	                isLogin = _props.isLogin,
+	                recentPost = _props.recentPost;
 
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'ShowPost' },
+	                _react2.default.createElement(_Nav2.default, { isLogin: isLogin }),
 	                _react2.default.createElement(_banner2.default, { title: singlePost.title, time: singlePost.postTime }),
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 post-container' },
+	                    { className: 'container flex-column ' },
 	                    _react2.default.createElement(
-	                        'section',
-	                        null,
-	                        _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: singlePost.content } })
+	                        'div',
+	                        { className: 'col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-xs-12 post-container flex' },
+	                        _react2.default.createElement(
+	                            'section',
+	                            null,
+	                            _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: singlePost.content } })
+	                        ),
+	                        _react2.default.createElement(_RecentPost2.default, { recentPost: recentPost })
 	                    ),
-	                    _react2.default.createElement(
+	                    userComment.length ? _react2.default.createElement(
 	                        'section',
-	                        null,
+	                        { className: 'col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-xs-12' },
 	                        _react2.default.createElement(
 	                            'p',
 	                            null,
@@ -6071,7 +6602,7 @@ webpackJsonp([0],[
 	                        ),
 	                        _react2.default.createElement(
 	                            'ol',
-	                            null,
+	                            { className: 'ShowPost__Comment' },
 	                            userComment.map(function (item) {
 	                                return _react2.default.createElement(
 	                                    'li',
@@ -6087,17 +6618,17 @@ webpackJsonp([0],[
 	                                        item.commentContent
 	                                    ),
 	                                    _react2.default.createElement(
-	                                        'span',
+	                                        'sapn',
 	                                        null,
-	                                        item.commentTime
+	                                        _fecha2.default.format(new Date(item.commentTime), 'YYYY年MM月DD日')
 	                                    )
 	                                );
 	                            })
 	                        )
-	                    ),
+	                    ) : null,
 	                    _react2.default.createElement(
 	                        'footer',
-	                        { className: 'ShowPost__Footer' },
+	                        { className: 'ShowPost__Footer col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-1 col-xs-12' },
 	                        '\u7528\u6237\u540D\uFF1A',
 	                        _react2.default.createElement(
 	                            'span',
@@ -6124,11 +6655,13 @@ webpackJsonp([0],[
 	    }]);
 
 	    return ShowPost;
-	}(_react2.default.Component)) || _class);
+	}(_react2.default.Component), _class2.contextTypes = {
+	    router: _react2.default.PropTypes.object
+	}, _temp)) || _class);
 	exports.default = ShowPost;
 
 /***/ },
-/* 322 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6137,7 +6670,7 @@ webpackJsonp([0],[
 	    value: true
 	});
 
-	var _reselect = __webpack_require__(304);
+	var _reselect = __webpack_require__(305);
 
 	var getSinglePost = function getSinglePost(state) {
 	    return state.showpost.singlePost;
@@ -6148,25 +6681,33 @@ webpackJsonp([0],[
 	var getUserComment = function getUserComment(state) {
 	    return state.showpost.userComment;
 	};
+	var getUserLogin = function getUserLogin(state) {
+	    return state.home.isLogin;
+	};
+	var getRecentPost = function getRecentPost(state) {
+	    return state.showpost.recentPost;
+	};
 
-	exports.default = (0, _reselect.createSelector)(getSinglePost, getUserComment, function (singlePost, userComment) {
+	exports.default = (0, _reselect.createSelector)(getSinglePost, getUserComment, getUserLogin, getRecentPost, function (singlePost, userComment, isLogin, recentPost) {
 	    return {
 	        singlePost: singlePost,
-	        userComment: userComment
+	        userComment: userComment,
+	        isLogin: isLogin,
+	        recentPost: recentPost
 	    };
 	});
 
 /***/ },
-/* 323 */
+/* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(324);
+	var content = __webpack_require__(329);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(293)(content, {});
+	var update = __webpack_require__(294)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -6183,15 +6724,106 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 324 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(292)();
+	exports = module.exports = __webpack_require__(293)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".ShowPost__Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(308) + ") no-repeat;\n  background-size: cover; }\n\n.ShowPost__Title {\n  margin-top: 20px; }\n  .ShowPost__Title__Text {\n    color: #fff; }\n\n.ShowPost textarea {\n  box-shadow: none;\n  -webkit-appearance: none;\n  overflow: auto;\n  padding: 10px;\n  height: 54px;\n  margin: 0;\n  resize: none;\n  color: #999;\n  width: 100%; }\n\n.ShowPost__Footer {\n  margin-bottom: 15px; }\n\n.ShowPost .post-container {\n  margin-top: 15px; }\n", ""]);
+	exports.push([module.id, ".ShowPost__Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(310) + ") no-repeat;\n  background-size: cover; }\n\n.ShowPost__Title {\n  margin-top: 20px; }\n  .ShowPost__Title__Text {\n    color: #fff; }\n\n.ShowPost textarea {\n  box-shadow: none;\n  -webkit-appearance: none;\n  overflow: auto;\n  padding: 10px;\n  height: 54px;\n  margin: 0;\n  resize: none;\n  color: #999;\n  width: 100%; }\n\n.ShowPost__Footer {\n  margin-bottom: 15px; }\n\n.ShowPost .post-container {\n  margin-top: 15px; }\n\n.ShowPost__Comment {\n  padding: 0;\n  list-style: none; }\n\n.ShowPost img {\n  width: 300px; }\n\n.ShowPost__Footer {\n  margin-top: 15px; }\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 330 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _reactRouter = __webpack_require__(179);
+
+	var _react = __webpack_require__(178);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	__webpack_require__(331);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (_ref) {
+	    var recentPost = _ref.recentPost;
+
+	    return _react2.default.createElement(
+	        'section',
+	        { className: 'RecentPost col-md-4' },
+	        _react2.default.createElement(
+	            'p',
+	            { className: 'RecentPost__Title' },
+	            '\u6700\u8FD1\u6587\u7AE0'
+	        ),
+	        _react2.default.createElement(
+	            'ol',
+	            null,
+	            recentPost.map(function (item) {
+	                return _react2.default.createElement(
+	                    'li',
+	                    { key: item._id, className: 'RecentPost__Item' },
+	                    _react2.default.createElement(
+	                        _reactRouter.Link,
+	                        { to: '/showPost/' + item._id },
+	                        item.title
+	                    )
+	                );
+	            })
+	        )
+	    );
+	}; /**
+	    * Created by shen on 2017/2/20.
+	    */
+
+/***/ },
+/* 331 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(332);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(294)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/sass-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js!./recentPost.scss", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/sass-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js!./recentPost.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 332 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(293)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".RecentPost__Title {\n  margin-left: 23px; }\n\n.RecentPost__Item {\n  margin-bottom: 10px; }\n", ""]);
 
 	// exports
 

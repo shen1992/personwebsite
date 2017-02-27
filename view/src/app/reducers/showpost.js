@@ -6,6 +6,7 @@ import * as types from '../constants/ActionTypes'
 const initialState = {
     singlePost: [],
     userComment: [],
+    recentPost: [],
 }
 
 export default function showpost(state = initialState, action) {
@@ -23,6 +24,8 @@ export default function showpost(state = initialState, action) {
 
                 ]
             }
+        case types.FETCH_RECENT_POST:
+            return Object.assign({}, state, {recentPost: action.recentPost})
         default:
             return state
     }

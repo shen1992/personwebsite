@@ -6,6 +6,34 @@
   align-items: center;
 }
 
-.navbar {
-  margin-bottom: 0;
+.flex-column {
+  flex-direction: column;
+  display: flex;
+}
+
+.flex-auto {
+  flex: 1;
+  overflow: scroll;
+}
+
+.panel {
+  margin-bottom: 0!important;
+}
+
+.navbar-default {
+  background-color: transparent!important;
+  border-color: transparent!important;
+}
+
+a:link {
+  text-decoration: none;
+}
+a:visited {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+a:active {
+  text-decoration: none;
 }

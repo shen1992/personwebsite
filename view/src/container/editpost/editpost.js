@@ -15,6 +15,7 @@ export default class EditPost extends React.Component {
 
     componentDidMount() {
         const query = this.context.router.location.query.postId
+        this.addTabText()
         if(!query)return
         this.props.actions.fetchNaturePost(query).then(() => {
             let {naturePost} = this.props
@@ -24,22 +25,45 @@ export default class EditPost extends React.Component {
         })
     }
 
+    addTabText = () => {
+        let {content} = this.refs
+        content.addEventListener('keydown', function (e) {
+            const keyCode = e.keyCode
+            if(keyCode == 9) {
+                const start = content.selectionStart,
+                    end = content.selectionEnd,
+                    value = content.value
+                if(start == end) {
+                    content.value = value.substring(0, start) + '\t' + value.substring(end)
+                    content.selectionStart = content.selectionEnd = start + 1
+                } else {
+                    const lineStart = value.lastIndexOf('\n', start)
+                    const lineEnd = value.lastIndexOf('\n', end)
+                    const lines = value.substring(lineStart, lineEnd).split(/\n/)
+                    const offset = lines.length
+                    console.log('lines', lines)
+                    const l = '\t' + lines.join('\n\t')
+                    content.value = value.substr(0, lineStart) + l + value.substr(lineEnd)
+                    content.selectionStart = start + 1
+                    content.selectionEnd = end + offset
+                }
+                e.preventDefault()
+            }
+        })
+    }
+
     commonPost = () => {
         let {title, content} = this.refs
         if(!title.value || !content.value) {
             alert('请输入完整信息')
             return
         }
-        let date = new Date()
-        let y = date.getFullYear()
-        let m = date.getMonth() + 1
-        let d = date.getDate()
 
         return {
             title: title.value,
             content: content.value,
             author: 'shen',
-            postTime: `${y}年${m}月${d}日`,
+            postTime: new Date().getTime(),
             type: 'post',
         }
     }
@@ -66,16 +90,19 @@ export default class EditPost extends React.Component {
 
     render() {
         let {naturePost} = this.props
-
         return (
-            <div className="EditPost panel panel-info">
+            <div className="EditPost panel panel-info flex-column">
                 <header className="panel-heading">
-                    <input className="panel-title" type="text" placeholder="文章标题"  ref="title" />
-                    {naturePost._id ?
-                        <span  className="btn btn-success pull-right" onClick={() => this.editPost(naturePost._id )}>编辑文章</span> :
-                        <span  className="btn btn-success pull-right" onClick={() => this.sendPost()}>发表文章</span>}
+                    <div className="container">
+                        <div className="row">
+                            <input className="panel-title col-md-8" type="text" placeholder="文章标题"  ref="title" />
+                            {naturePost._id ?
+                                <span  className="btn btn-success pull-right col-md-2" onClick={() => this.editPost(naturePost._id )}>编辑文章</span> :
+                                <span  className="btn btn-success pull-right col-md-2" onClick={() => this.sendPost()}>发表文章</span>}
+                        </div>
+                    </div>
                 </header>
-                <section className="panel-body">
+                <section className="panel-body flex-auto">
                     <textarea className="EditPost__PostHeight container" ref="content" >
                     </textarea>
                 </section>

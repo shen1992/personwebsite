@@ -6,6 +6,7 @@ var router = express.Router()
 var multer = require('multer'); // v1.0.5
 var upload = multer(); // for parsing multipart/form-data
 var markdown = require('markdown').markdown
+var fecha = require('fecha')
 
 
 
@@ -24,7 +25,7 @@ router.get('/list', function (req, res) {
         for(var i = 0; i < pageCount; i++) {
             pageArr.push(i)
         }
-        Website.find({type: 'post'}, 'title postTime _id', {limit: 10, skip: page * 10}, function (err, postList) {
+        Website.find({type: 'post'}, 'title postTime _id', {limit: 10, skip: page * 10, sort: {postTime: -1}}, function (err, postList) {
             if(err) return console.error(err)
             res.json({count, pageArr, postList,})
         })
@@ -144,6 +145,13 @@ router.post('/updatePost', function (req, res) {
     }, function (err, row) {
         if(err) return console.log(err)
         res.send({code: '200'})
+    })
+})
+
+router.get('/recentPost', function (req, res) {
+    Website.find({type: 'post'}, 'title _id', { limit: 5, sort: {postTime: -1}}, function (err, doc) {
+        if(err) return console.log(err)
+        res.json(doc)
     })
 })
 

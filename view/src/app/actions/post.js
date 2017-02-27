@@ -30,7 +30,10 @@ export function deletePost(id) {
         return new POST('/delete', {_id: id})
             .send()
             .then(resp => {
-                return resp
+                dispatch({
+                    type: types.DELETE_POST,
+                    deleteId: id,
+                })
             })
     }
 }

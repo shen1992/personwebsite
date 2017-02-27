@@ -1,6 +1,11 @@
 .EditPost {
+  height: 100%;
   &__PostHeight {
-    height: 600px;
+    overflow: scroll;
+    height: 550px;
     width: 100%;
+  }
+  .test {
+    overflow: scroll;
   }
 }

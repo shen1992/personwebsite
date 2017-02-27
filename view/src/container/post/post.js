@@ -6,6 +6,7 @@ import {Link} from 'react-router'
 import postSelect from 'app/selectors/post'
 import connect from 'utils/connect'
 import './post.scss'
+import fecha from 'fecha'
 @connect(postSelect)
 
 export default class Post extends React.Component {
@@ -27,6 +28,7 @@ export default class Post extends React.Component {
     }
 
     goToEitPost = () => {
+        console.log('1', this.props.isLogin)
         if(this.props.isLogin) {
             this.context.router.push('/editpost')
             return
@@ -54,16 +56,7 @@ export default class Post extends React.Component {
     }
 
     deletePost = (_id) => {
-        this.props.actions.deletePost(_id).then(resp => {
-            this.state.postList.map((item, index) => {
-                if(item._id === _id) {
-                    this.state.postList.splice(index, 1)
-                    this.setState({
-                        postList: this.state.postList
-                    })
-                }
-            })
-        })
+        this.props.actions.deletePost(_id)
     }
 
     findAssignPost = () => {
@@ -86,6 +79,7 @@ export default class Post extends React.Component {
 
     render() {
         let {pageArr, assignPost, postList, isLogin} = this.props
+
         return (
             <div className="Post">
                 <header className="navbar navbar-inverse">
@@ -98,7 +92,9 @@ export default class Post extends React.Component {
                                         <span onClick={() => this.findAssignPost()} className="input-group-addon">查询</span>
                                     </div>
                                 </div>
-                                <button className="btn btn-success col-md-1 col-xs-3 col-md-offset-6" onClick={() => this.goToEitPost()} >写新文章</button>
+                                {
+                                    isLogin && <button className="btn btn-success col-md-1 col-xs-3 col-md-offset-6" onClick={() => this.goToEitPost()} >写新文章</button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -116,7 +112,7 @@ export default class Post extends React.Component {
                                     return (
                                         <Link to={`/showpost/${item._id}`} key={item._id} className='flex' >
                                             <p>{item.title}</p>
-                                            <span>({item.postTime})</span>
+                                            <span>shen by {fecha.format(new Date(item.postTime), 'YYYY年MM月DD日')}</span>
                                         </Link>
                                     )
                                 }) : '没有找到该文章') : null
@@ -130,9 +126,9 @@ export default class Post extends React.Component {
                                                 <Link to={`/showpost/${item._id}`}>
                                                     <p style={{fontSize: '26px'}}>{item.title}</p>
                                                 </Link>
-                                                { isLogin ? <Link to={`/editpost?postId=${item._id}`} style={{marginRight: '5px'}}>编辑</Link> : null}
-                                                { isLogin ? <span onClick={() => this.deletePost(item._id)}>删除</span> : null}
-                                                <p>shen by {item.postTime}</p>
+                                                { isLogin ? <Link className='label label-success' to={`/editpost?postId=${item._id}`} style={{marginRight: '5px'}}>编辑</Link> : null}
+                                                { isLogin ? <span className="label label-warning" onClick={() => this.deletePost(item._id)}>删除</span> : null}
+                                                <p>shen by {fecha.format(new Date(item.postTime), 'YYYY年MM月DD日')}</p>
                                             </li>
                                         )
                                     })

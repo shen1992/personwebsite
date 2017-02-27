@@ -8,6 +8,7 @@ const initialState = {
     count: 0,
     pageArr: [],
     assignPost: [],
+    deleteId: 0,
 }
 
 export default function post(state = initialState, action) {
@@ -22,6 +23,11 @@ export default function post(state = initialState, action) {
             return Object.assign({}, state, {assignPost: action.assignPost})
         case types.RESET_ASSIGN_POST:
             return Object.assign({}, state, {assignPost: []})
+        case types.DELETE_POST:
+            return {
+                ...state,
+                postList: state.postList.filter(item => item._id != action.deleteId)
+            }
         default:
             return state
     }

@@ -15,7 +15,7 @@ app.use(session({
     resave: true,
     saveUninitialized:false,
     cookie:{
-        maxAge:1000*60*10 //过期时间设置(单位毫秒)
+        maxAge:1000*60*10*100 //过期时间设置(单位毫秒)
     }
 }))
 var router = require('./router/index')
@@ -36,4 +36,6 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(9527)
+var port = process.env.PORT || 9527
+
+app.listen(port)
