@@ -3,12 +3,12 @@
  */
 import React from 'react'
 import {Link} from 'react-router'
-import postSelect from 'app/selectors/post'
-import connect from 'utils/connect'
 import './post.scss'
 import fecha from 'fecha'
-// @connect(postSelect)
-
+import {fetchList, deletePost, findAssignPost} from 'app/actions/post'
+import {observer, inject} from 'mobx-react'
+@inject('postStore')
+@observer
 export default class Post extends React.Component {
 
     static contextTypes = {
@@ -24,11 +24,10 @@ export default class Post extends React.Component {
 
     componentWillMount() {
         const page = this.props.router.location.query.page
-        this.props.actions.fetchList(page)
+        fetchList(page)
     }
 
     goToEitPost = () => {
-        console.log('1', this.props.isLogin)
         if(this.props.isLogin) {
             this.context.router.push('/editpost')
             return
@@ -41,14 +40,14 @@ export default class Post extends React.Component {
         let local = this.props.router
         const pageNum = page + parseInt(num)
         if(pageNum > (this.props.pageArr.length - 1) || pageNum < 0)return
-        this.props.actions.fetchList(pageNum).then(() => {
+        fetchList(pageNum).then(() => {
             local.location.query.page = pageNum
             local.replace(`/post?page=${pageNum}`)
         })
     }
 
     goToAssignPage = (num) => {
-        this.props.actions.fetchList(num).then(() => {
+        fetchList(num).then(() => {
             let local = this.props.router
             local.location.query.page = num
             local.replace(`/post?page=${num}`)
@@ -78,8 +77,8 @@ export default class Post extends React.Component {
     }
 
     render() {
-        let {pageArr, assignPost, postList, isLogin} = this.props
-
+        let {pageArr, assignPost, postList, isLogin} = this.props.postStore
+        if(!postList || !pageArr ) return null
         return (
             <div className="Post">
                 <header className="navbar navbar-inverse">

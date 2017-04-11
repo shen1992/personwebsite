@@ -35,13 +35,12 @@ export default class App extends React.Component{
     }
 
     userLogout = () => {
-        // userLogout().then(resp => {
-            // console.log('resp', resp)
-            // if(resp.code == 200) {
-            //     this.props.homeStore.changeLogin(false)
-            // }
-        // })
-      console.log('1')
+        userLogout().then(resp => {
+            console.log('resp', resp)
+            if(resp.code == 200) {
+                this.props.homeStore.changeLogin(false)
+            }
+        })
     }
 
 

@@ -3,60 +3,36 @@
  */
 import * as types from 'app/constants/ActionTypes'
 import {GET, POST} from 'utils/request'
-
-function receiveList(postList, pageArr, count) {
-    return {
-        type: types.FETCH_LIST,
-        postList,
-        pageArr,
-        count,
-
-    }
-}
+import {postStore} from 'app/store'
 
 export function fetchList(num) {
-    return (dispatch, getState) => {
-        return new GET(`/list?page=${num}`)
-            .send()
-            .then(resp => {
-                dispatch(receiveList(resp.postList, resp.pageArr, resp.count))
-            })
-            .catch((error) => console.log(error))
-    }
+    return new GET(`/list?page=${num}`)
+        .send()
+        .then(resp => {
+            postStore.fetchPostList(resp.postList)
+            postStore.fetchPostArr(resp.pageArr)
+        })
+        .catch((error) => console.log(error))
 }
 
 export function deletePost(id) {
-    return (dispatch, getState) => {
-        return new POST('/delete', {_id: id})
-            .send()
-            .then(resp => {
-                dispatch({
-                    type: types.DELETE_POST,
-                    deleteId: id,
-                })
-            })
-    }
+    return new POST('/delete', {_id: id})
+        .send()
+        .then(resp => {
+        })
 }
 
 export function findAssignPost(title) {
-    return (dispatch, getState) => {
-        return new GET(`/findPost?title=${title}`)
-            .send()
-            .then((resp) => {
-                dispatch({
-                    type: types.FIND_ASSIGN_POST,
-                    assignPost: resp
-                })
-            })
-    }
+    return new GET(`/findPost?title=${title}`)
+        .send()
+        .then((resp) => {
+        })
 }
 
 export function resetAssignPost() {
-    return (dispatch, getState) => {
-        return new Promise(reslove => {
-            if(dispatch({type: types.RESET_ASSIGN_POST})) {
-                reslove('success !')
-            }
-        })
-    }
+    return new Promise(reslove => {
+        if(true) {
+            reslove('success !')
+        }
+    })
 }

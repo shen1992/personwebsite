@@ -6988,17 +6988,23 @@ webpackJsonp([0],[
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.homeStore = undefined;
+	exports.postStore = exports.homeStore = undefined;
 
 	var _home = __webpack_require__(279);
 
 	var _home2 = _interopRequireDefault(_home);
+
+	var _post = __webpack_require__(340);
+
+	var _post2 = _interopRequireDefault(_post);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.homeStore = _home2.default; /**
 	                                     * Created by shen on 2017/4/11.
 	                                     */
+
+	exports.postStore = _post2.default;
 
 /***/ },
 /* 279 */
@@ -7498,13 +7504,12 @@ webpackJsonp([0],[
 	        };
 
 	        _this.userLogout = function () {
-	            // userLogout().then(resp => {
-	            // console.log('resp', resp)
-	            // if(resp.code == 200) {
-	            //     this.props.homeStore.changeLogin(false)
-	            // }
-	            // })
-	            console.log('1');
+	            (0, _home.userLogout)().then(function (resp) {
+	                console.log('resp', resp);
+	                if (resp.code == 200) {
+	                    _this.props.homeStore.changeLogin(false);
+	                }
+	            });
 	        };
 
 	        return _this;
@@ -8960,61 +8965,34 @@ webpackJsonp([0],[
 
 	var _request = __webpack_require__(303);
 
+	var _store = __webpack_require__(278);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	/**
-	 * Created by shen on 2017/2/7.
-	 */
-	function receiveList(postList, pageArr, count) {
-	    return {
-	        type: types.FETCH_LIST,
-	        postList: postList,
-	        pageArr: pageArr,
-	        count: count
-
-	    };
-	}
-
 	function fetchList(num) {
-	    return function (dispatch, getState) {
-	        return new _request.GET('/list?page=' + num).send().then(function (resp) {
-	            dispatch(receiveList(resp.postList, resp.pageArr, resp.count));
-	        }).catch(function (error) {
-	            return console.log(error);
-	        });
-	    };
-	}
-
+	    return new _request.GET('/list?page=' + num).send().then(function (resp) {
+	        _store.postStore.fetchPostList(resp.postList);
+	        _store.postStore.fetchPostArr(resp.pageArr);
+	    }).catch(function (error) {
+	        return console.log(error);
+	    });
+	} /**
+	   * Created by shen on 2017/2/7.
+	   */
 	function deletePost(id) {
-	    return function (dispatch, getState) {
-	        return new _request.POST('/delete', { _id: id }).send().then(function (resp) {
-	            dispatch({
-	                type: types.DELETE_POST,
-	                deleteId: id
-	            });
-	        });
-	    };
+	    return new _request.POST('/delete', { _id: id }).send().then(function (resp) {});
 	}
 
 	function findAssignPost(title) {
-	    return function (dispatch, getState) {
-	        return new _request.GET('/findPost?title=' + title).send().then(function (resp) {
-	            dispatch({
-	                type: types.FIND_ASSIGN_POST,
-	                assignPost: resp
-	            });
-	        });
-	    };
+	    return new _request.GET('/findPost?title=' + title).send().then(function (resp) {});
 	}
 
 	function resetAssignPost() {
-	    return function (dispatch, getState) {
-	        return new Promise(function (reslove) {
-	            if (dispatch({ type: types.RESET_ASSIGN_POST })) {
-	                reslove('success !');
-	            }
-	        });
-	    };
+	    return new Promise(function (reslove) {
+	        if (true) {
+	            reslove('success !');
+	        }
+	    });
 	}
 
 /***/ },
@@ -9824,9 +9802,9 @@ webpackJsonp([0],[
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _class, _temp; /**
-	                    * Created by shen on 2017/2/7.
-	                    */
+	var _dec, _class, _class2, _temp; /**
+	                                   * Created by shen on 2017/2/7.
+	                                   */
 
 
 	var _react = __webpack_require__(178);
@@ -9835,19 +9813,15 @@ webpackJsonp([0],[
 
 	var _reactRouter = __webpack_require__(179);
 
-	var _post = __webpack_require__(320);
-
-	var _post2 = _interopRequireDefault(_post);
-
-	var _connect = __webpack_require__(285);
-
-	var _connect2 = _interopRequireDefault(_connect);
-
 	__webpack_require__(321);
 
 	var _fecha = __webpack_require__(312);
 
 	var _fecha2 = _interopRequireDefault(_fecha);
+
+	var _post = __webpack_require__(306);
+
+	var _mobxReact = __webpack_require__(235);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9859,9 +9833,7 @@ webpackJsonp([0],[
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	// @connect(postSelect)
-
-	var Post = (_temp = _class = function (_React$Component) {
+	var Post = (_dec = (0, _mobxReact.inject)('postStore'), _dec(_class = (0, _mobxReact.observer)(_class = (_temp = _class2 = function (_React$Component) {
 	    _inherits(Post, _React$Component);
 
 	    function Post(args) {
@@ -9872,7 +9844,6 @@ webpackJsonp([0],[
 	        var _this = _possibleConstructorReturn(this, (_ref = Post.__proto__ || Object.getPrototypeOf(Post)).call.apply(_ref, [this].concat(_toConsumableArray(args))));
 
 	        _this.goToEitPost = function () {
-	            console.log('1', _this.props.isLogin);
 	            if (_this.props.isLogin) {
 	                _this.context.router.push('/editpost');
 	                return;
@@ -9886,14 +9857,14 @@ webpackJsonp([0],[
 	            var local = _this.props.router;
 	            var pageNum = page + parseInt(num);
 	            if (pageNum > _this.props.pageArr.length - 1 || pageNum < 0) return;
-	            _this.props.actions.fetchList(pageNum).then(function () {
+	            (0, _post.fetchList)(pageNum).then(function () {
 	                local.location.query.page = pageNum;
 	                local.replace('/post?page=' + pageNum);
 	            });
 	        };
 
 	        _this.goToAssignPage = function (num) {
-	            _this.props.actions.fetchList(num).then(function () {
+	            (0, _post.fetchList)(num).then(function () {
 	                var local = _this.props.router;
 	                local.location.query.page = num;
 	                local.replace('/post?page=' + num);
@@ -9933,20 +9904,20 @@ webpackJsonp([0],[
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {
 	            var page = this.props.router.location.query.page;
-	            this.props.actions.fetchList(page);
+	            (0, _post.fetchList)(page);
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this2 = this;
 
-	            var _props = this.props,
-	                pageArr = _props.pageArr,
-	                assignPost = _props.assignPost,
-	                postList = _props.postList,
-	                isLogin = _props.isLogin;
+	            var _props$postStore = this.props.postStore,
+	                pageArr = _props$postStore.pageArr,
+	                assignPost = _props$postStore.assignPost,
+	                postList = _props$postStore.postList,
+	                isLogin = _props$postStore.isLogin;
 
-
+	            if (!postList || !pageArr) return null;
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'Post' },
@@ -10119,53 +10090,13 @@ webpackJsonp([0],[
 	    }]);
 
 	    return Post;
-	}(_react2.default.Component), _class.contextTypes = {
+	}(_react2.default.Component), _class2.contextTypes = {
 	    router: _react2.default.PropTypes.object
-	}, _temp);
+	}, _temp)) || _class) || _class);
 	exports.default = Post;
 
 /***/ },
-/* 320 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _reselect = __webpack_require__(310);
-
-	var getPostList = function getPostList(state) {
-	    return state.post.postList;
-	}; /**
-	    * Created by shen on 2017/2/7.
-	    */
-
-	var getPostPageCount = function getPostPageCount(state) {
-	    return state.post.pageArr;
-	};
-	var getPostCount = function getPostCount(state) {
-	    return state.post.count;
-	};
-	var getAssignPost = function getAssignPost(state) {
-	    return state.post.assignPost;
-	};
-	var getUserIsLogin = function getUserIsLogin(state) {
-	    return state.home.isLogin;
-	};
-
-	exports.default = (0, _reselect.createSelector)(getPostList, getPostPageCount, getPostCount, getAssignPost, getUserIsLogin, function (postList, pageArr, count, assignPost, isLogin) {
-	    return {
-	        postList: postList,
-	        pageArr: pageArr,
-	        count: count,
-	        assignPost: assignPost,
-	        isLogin: isLogin
-	    };
-	});
-
-/***/ },
+/* 320 */,
 /* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -11126,6 +11057,116 @@ webpackJsonp([0],[
 	}(_react2.default.Component);
 
 	exports.default = Live;
+
+/***/ },
+/* 340 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4; /**
+	                                                                                   * Created by shen on 2017/4/11.
+	                                                                                   */
+
+
+	var _mobx = __webpack_require__(236);
+
+	var _post = __webpack_require__(306);
+
+	function _initDefineProp(target, property, descriptor, context) {
+	    if (!descriptor) return;
+	    Object.defineProperty(target, property, {
+	        enumerable: descriptor.enumerable,
+	        configurable: descriptor.configurable,
+	        writable: descriptor.writable,
+	        value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+	    });
+	}
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+	    var desc = {};
+	    Object['ke' + 'ys'](descriptor).forEach(function (key) {
+	        desc[key] = descriptor[key];
+	    });
+	    desc.enumerable = !!desc.enumerable;
+	    desc.configurable = !!desc.configurable;
+
+	    if ('value' in desc || desc.initializer) {
+	        desc.writable = true;
+	    }
+
+	    desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+	        return decorator(target, property, desc) || desc;
+	    }, desc);
+
+	    if (context && desc.initializer !== void 0) {
+	        desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+	        desc.initializer = undefined;
+	    }
+
+	    if (desc.initializer === void 0) {
+	        Object['define' + 'Property'](target, property, desc);
+	        desc = null;
+	    }
+
+	    return desc;
+	}
+
+	function _initializerWarningHelper(descriptor, context) {
+	    throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
+	}
+
+	(0, _mobx.useStrict)(true);
+	var Post = (_class = function () {
+	    function Post() {
+	        _classCallCheck(this, Post);
+
+	        _initDefineProp(this, 'pageArr', _descriptor, this);
+
+	        _initDefineProp(this, 'assignPost', _descriptor2, this);
+
+	        _initDefineProp(this, 'postList', _descriptor3, this);
+
+	        _initDefineProp(this, 'isLogin', _descriptor4, this);
+
+	        this.postList = [];
+	    }
+
+	    _createClass(Post, [{
+	        key: 'fetchPostList',
+	        value: function fetchPostList(list) {
+	            this.postList = list.slice();
+	        }
+	    }, {
+	        key: 'fetchPostArr',
+	        value: function fetchPostArr(arr) {
+	            this.pageArr = arr.slice();
+	        }
+	    }]);
+
+	    return Post;
+	}(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'pageArr', [_mobx.observable], {
+	    enumerable: true,
+	    initializer: null
+	}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'assignPost', [_mobx.observable], {
+	    enumerable: true,
+	    initializer: null
+	}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'postList', [_mobx.observable], {
+	    enumerable: true,
+	    initializer: null
+	}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'isLogin', [_mobx.observable], {
+	    enumerable: true,
+	    initializer: null
+	}), _applyDecoratedDescriptor(_class.prototype, 'fetchPostList', [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, 'fetchPostList'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'fetchPostArr', [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, 'fetchPostArr'), _class.prototype)), _class);
+	exports.default = new Post();
 
 /***/ }
 ]);
