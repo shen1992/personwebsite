@@ -4,7 +4,7 @@
 import React from 'react'
 import connect from 'utils/connect'
 
-@connect()
+// @connect()
 
 export default class Live extends React.Component {
     handleFile = () => {

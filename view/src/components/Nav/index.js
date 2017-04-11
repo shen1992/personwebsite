@@ -4,6 +4,7 @@
 import {Link} from 'react-router'
 import React from 'react'
 import './nav.scss'
+
 export default ({isLogin, userLogout, goToLogin}) => {
     return (
         <nav className="navbar navbar-default navbar-custom Nav">

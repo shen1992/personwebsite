@@ -4,10 +4,10 @@
 import ReactDom from 'react-dom'
 import React from 'react'
 
-import { Router, Route, browserHistory } from 'react-router'
-import { Provider } from 'react-redux'
-import { syncHistoryWithStore } from 'react-router-redux'
+import { Router, Route, browserHistory} from 'react-router'
+import {Provider} from 'mobx-react'
 import configureStore from 'app/store/configureStore'
+import * as stores from 'app/store'
 import 'sass/index.scss'
 // import Home from 'react-proxy-loader?name=Home!./home'
 // import Post from 'react-proxy-loader?name=Post!./post'
@@ -22,23 +22,17 @@ import EditPost from './editpost/editpost'
 import ShowPost from './showpost/showpost'
 import Live from './live/live'
 
-const routes = (history) => (
-    <Router history={history}>
-        <Route path="/home" component={Home} />
-        <Route path='/post' component={Post} />
-        <Route path='/login' component={Login} />
-        <Route path='/editpost' component={EditPost} />
-        <Route path='/showpost/:post_id' component={ShowPost} />
-        <Route path='/live' component={Live} />
-        <Route path="*" component={Home} />
-    </Router>
-)
-
-const store = configureStore(browserHistory)
-const history = syncHistoryWithStore(browserHistory, store)
-
 ReactDom.render(
-    <Provider store={store}>
-        {routes(history)}
-    </Provider>, document.getElementById('app')
+    <Provider {...stores}>
+        <Router history={browserHistory} >
+            <Route path="/home" component={Home} />
+            <Route path="/post" component={Post} />
+            <Route path="/login" component={Login} />
+            <Route path="/editpost" component={EditPost} />
+            <Route path="/showpost/:post_id" component={ShowPost} />
+            <Route path='/live' component={Live} />
+            <Route path="*" component={Home} />
+        </Router>
+    </Provider>,
+    document.getElementById('app')
 )

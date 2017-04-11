@@ -2,9 +2,8 @@
  * Created by shen on 2017/2/7.
  */
 import React from 'react'
-import connect from 'utils/connect'
 import './login.scss'
-@connect()
+import {sendUserLogin} from 'app/actions/login'
 
 export default class Login extends React.Component {
 
@@ -18,8 +17,7 @@ export default class Login extends React.Component {
             username: username.value,
             password: password.value
         }
-        this.props.actions.sendUserLogin(params).then((resp) => {
-            console.log('resp',resp)
+        sendUserLogin(params).then((resp) => {
             if(resp.code === '200') {
                 this.context.router.goBack()
             } else {

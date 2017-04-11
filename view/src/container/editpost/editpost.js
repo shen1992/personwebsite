@@ -5,7 +5,7 @@ import React from 'react'
 import connect from 'utils/connect'
 import editSelect from 'app/selectors/editpost'
 import './editpost.scss'
-@connect(editSelect)
+// @connect(editSelect)
 
 export default class EditPost extends React.Component {
 

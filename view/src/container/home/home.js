@@ -5,13 +5,13 @@
  * Created by shen on 2017/2/3.
  */
 import React from 'react'
-import connect from 'utils/connect'
-import HomeSelect from 'app/selectors/home'
 import Banner from 'comp/banner/banner.js'
 import Nav from 'comp/Nav'
+import {observer, inject} from 'mobx-react'
+import {userLogin, userLogout} from 'app/actions/home'
 
-@connect(HomeSelect)
-
+@inject('homeStore')
+@observer
 export default class App extends React.Component{
 
     constructor(args) {
@@ -23,7 +23,11 @@ export default class App extends React.Component{
     }
 
     componentWillMount() {
-        this.props.actions.userLogin()
+        userLogin().then(resp => {
+            if(resp.isLogin) {
+                this.props.homeStore.changeLogin(true)
+            }
+        })
     }
 
     goToLogin = () => {
@@ -31,12 +35,18 @@ export default class App extends React.Component{
     }
 
     userLogout = () => {
-        this.props.actions.userLogout()
+        // userLogout().then(resp => {
+            // console.log('resp', resp)
+            // if(resp.code == 200) {
+            //     this.props.homeStore.changeLogin(false)
+            // }
+        // })
+      console.log('1')
     }
 
 
     render() {
-        let {isLogin} = this.props
+        let {isLogin} = this.props.homeStore
         return (
             <div className="Home">
                 <Nav isLogin={isLogin} goToLogin={this.goToLogin} userLogout={this.userLogout} />

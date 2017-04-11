@@ -7,7 +7,7 @@ import postSelect from 'app/selectors/post'
 import connect from 'utils/connect'
 import './post.scss'
 import fecha from 'fecha'
-@connect(postSelect)
+// @connect(postSelect)
 
 export default class Post extends React.Component {
 

@@ -10,7 +10,7 @@ import Nav from 'comp/Nav'
 import fecha from 'fecha'
 import RecentPost from 'comp/RecentPost'
 import {isDevice} from 'utils/constant'
-@connect(showPostSelect)
+// @connect(showPostSelect)
 
 export default class ShowPost extends React.Component {
 
