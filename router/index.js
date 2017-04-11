@@ -61,7 +61,6 @@ router.post('/login', function (req, res) {
         username: 'shen',
         password: 'shen'
     }
-    console.log('1', req.body)
     if(req.body.username === user.username && req.body.password === user.password) {
         req.session.user = user
         res.send({code: '200'})
@@ -105,7 +104,6 @@ router.post('/userComment', function (req, res) {
     Website.create(arr, (err, doc) => {
         if(err) return console.log(err)
         if(doc) {
-            console.log()
             res.send({code: '200', doc})
             console.log('成功插入数据库！')
         }
