@@ -28,27 +28,34 @@ webpackJsonp([0],[
 
 	var _home2 = _interopRequireDefault(_home);
 
-	var _post = __webpack_require__(314);
+	var _post = __webpack_require__(315);
 
 	var _post2 = _interopRequireDefault(_post);
 
-	var _login = __webpack_require__(318);
+	var _login = __webpack_require__(319);
 
 	var _login2 = _interopRequireDefault(_login);
 
-	var _editpost = __webpack_require__(322);
+	var _editpost = __webpack_require__(323);
 
 	var _editpost2 = _interopRequireDefault(_editpost);
 
-	var _showpost = __webpack_require__(326);
+	var _showpost = __webpack_require__(327);
 
 	var _showpost2 = _interopRequireDefault(_showpost);
 
+	var _live = __webpack_require__(335);
+
+	var _live2 = _interopRequireDefault(_live);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/**
-	 * Created by shen on 2017/2/3.
-	 */
+	// import Home from 'react-proxy-loader?name=Home!./home'
+	// import Post from 'react-proxy-loader?name=Post!./post'
+	// import Login from 'react-proxy-loader?name=Login!./login'
+	// import EditPost from 'react-proxy-loader?name=EditPost!./editpost'
+	// import ShowPost from 'react-proxy-loader?name=ShowPost!./showpost'
+
 	var routes = function routes(history) {
 	    return _react2.default.createElement(
 	        _reactRouter.Router,
@@ -58,14 +65,13 @@ webpackJsonp([0],[
 	        _react2.default.createElement(_reactRouter.Route, { path: '/login', component: _login2.default }),
 	        _react2.default.createElement(_reactRouter.Route, { path: '/editpost', component: _editpost2.default }),
 	        _react2.default.createElement(_reactRouter.Route, { path: '/showpost/:post_id', component: _showpost2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: '/live', component: _live2.default }),
 	        _react2.default.createElement(_reactRouter.Route, { path: '*', component: _home2.default })
 	    );
-	};
-	// import Home from 'react-proxy-loader?name=Home!./home'
-	// import Post from 'react-proxy-loader?name=Post!./post'
-	// import Login from 'react-proxy-loader?name=Login!./login'
-	// import EditPost from 'react-proxy-loader?name=EditPost!./editpost'
-	// import ShowPost from 'react-proxy-loader?name=ShowPost!./showpost'
+	}; /**
+	    * Created by shen on 2017/2/3.
+	    */
+
 
 	var store = (0, _configureStore2.default)(_reactRouter.browserHistory);
 	var history = (0, _reactRouterRedux.syncHistoryWithStore)(_reactRouter.browserHistory, store);
@@ -4395,15 +4401,15 @@ webpackJsonp([0],[
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	var _home = __webpack_require__(304);
+	var _home = __webpack_require__(305);
 
 	var _home2 = _interopRequireDefault(_home);
 
-	var _banner = __webpack_require__(306);
+	var _banner = __webpack_require__(307);
 
 	var _banner2 = _interopRequireDefault(_banner);
 
-	var _Nav = __webpack_require__(311);
+	var _Nav = __webpack_require__(312);
 
 	var _Nav2 = _interopRequireDefault(_Nav);
 
@@ -4576,6 +4582,18 @@ webpackJsonp([0],[
 	    enumerable: true,
 	    get: function get() {
 	      return _showpost[key];
+	    }
+	  });
+	});
+
+	var _live = __webpack_require__(304);
+
+	Object.keys(_live).forEach(function (key) {
+	  if (key === "default" || key === "__esModule") return;
+	  Object.defineProperty(exports, key, {
+	    enumerable: true,
+	    get: function get() {
+	      return _live[key];
 	    }
 	  });
 	});
@@ -4949,8 +4967,40 @@ webpackJsonp([0],[
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.sendOneLive = sendOneLive;
 
-	var _reselect = __webpack_require__(305);
+	var _ActionTypes = __webpack_require__(279);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	var _request = __webpack_require__(299);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	/**
+	 * Created by shen on 2017/3/1.
+	 */
+	function sendOneLive(param, option) {
+	    return function (dispatch, getState) {
+	        return new _request.POST('/file-upload', param, option).send().then(function () {
+	            // dispatch({
+	            //     type: types.SEND_ONE_LIVE
+	            // })
+	        });
+	    };
+	}
+
+/***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _reselect = __webpack_require__(306);
 
 	var getHomeLogin = function getHomeLogin(state) {
 	    return state.home.isLogin;
@@ -4964,7 +5014,7 @@ webpackJsonp([0],[
 	});
 
 /***/ },
-/* 305 */
+/* 306 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5080,7 +5130,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 306 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5093,11 +5143,11 @@ webpackJsonp([0],[
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _fecha = __webpack_require__(307);
+	var _fecha = __webpack_require__(308);
 
 	var _fecha2 = _interopRequireDefault(_fecha);
 
-	__webpack_require__(308);
+	__webpack_require__(309);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5140,7 +5190,7 @@ webpackJsonp([0],[
 	    */
 
 /***/ },
-/* 307 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;(function (main) {
@@ -5479,13 +5529,13 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 308 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(309);
+	var content = __webpack_require__(310);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(294)(content, {});
@@ -5505,7 +5555,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 309 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(293)();
@@ -5513,19 +5563,19 @@ webpackJsonp([0],[
 
 
 	// module
-	exports.push([module.id, ".Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(310) + ") no-repeat;\n  background-size: cover; }\n  .Banner .post-heading {\n    padding: 85px 0 55px; }\n", ""]);
+	exports.push([module.id, ".Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(311) + ") no-repeat;\n  background-size: cover; }\n  .Banner .post-heading {\n    padding: 85px 0 55px; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 310 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "a0089296d1a34bc0a5e72701efe004e0.jpg";
 
 /***/ },
-/* 311 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5540,7 +5590,7 @@ webpackJsonp([0],[
 
 	var _react2 = _interopRequireDefault(_react);
 
-	__webpack_require__(312);
+	__webpack_require__(313);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5590,6 +5640,15 @@ webpackJsonp([0],[
 	                        { to: '/post?page=0' },
 	                        '\u6211\u7684\u535A\u5BA2'
 	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'li',
+	                    { className: 'pull-right' },
+	                    _react2.default.createElement(
+	                        _reactRouter.Link,
+	                        { to: '/live' },
+	                        '\u751F\u6D3B'
+	                    )
 	                )
 	            )
 	        )
@@ -5599,13 +5658,13 @@ webpackJsonp([0],[
 	    */
 
 /***/ },
-/* 312 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(313);
+	var content = __webpack_require__(314);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(294)(content, {});
@@ -5625,7 +5684,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 313 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(293)();
@@ -5639,7 +5698,7 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 314 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5662,7 +5721,7 @@ webpackJsonp([0],[
 
 	var _reactRouter = __webpack_require__(179);
 
-	var _post = __webpack_require__(315);
+	var _post = __webpack_require__(316);
 
 	var _post2 = _interopRequireDefault(_post);
 
@@ -5670,9 +5729,9 @@ webpackJsonp([0],[
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	__webpack_require__(316);
+	__webpack_require__(317);
 
-	var _fecha = __webpack_require__(307);
+	var _fecha = __webpack_require__(308);
 
 	var _fecha2 = _interopRequireDefault(_fecha);
 
@@ -5950,7 +6009,7 @@ webpackJsonp([0],[
 	exports.default = Post;
 
 /***/ },
-/* 315 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5959,7 +6018,7 @@ webpackJsonp([0],[
 	    value: true
 	});
 
-	var _reselect = __webpack_require__(305);
+	var _reselect = __webpack_require__(306);
 
 	var getPostList = function getPostList(state) {
 	    return state.post.postList;
@@ -5991,13 +6050,13 @@ webpackJsonp([0],[
 	});
 
 /***/ },
-/* 316 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(317);
+	var content = __webpack_require__(318);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(294)(content, {});
@@ -6017,7 +6076,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 317 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(293)();
@@ -6031,7 +6090,7 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 318 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6056,7 +6115,7 @@ webpackJsonp([0],[
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	__webpack_require__(319);
+	__webpack_require__(320);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6163,13 +6222,13 @@ webpackJsonp([0],[
 	exports.default = Login;
 
 /***/ },
-/* 319 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(320);
+	var content = __webpack_require__(321);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(294)(content, {});
@@ -6189,7 +6248,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 320 */
+/* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(293)();
@@ -6197,19 +6256,19 @@ webpackJsonp([0],[
 
 
 	// module
-	exports.push([module.id, ".Login {\n  height: 100%;\n  background: url(" + __webpack_require__(321) + ") no-repeat;\n  background-size: cover;\n  font-size: 16px; }\n  .Login .form {\n    background: rgba(255, 255, 255, 0.2);\n    max-width: 400px;\n    margin: 100px auto;\n    padding: 10px; }\n  .Login .form-item {\n    margin-bottom: 15px; }\n", ""]);
+	exports.push([module.id, ".Login {\n  height: 100%;\n  background: url(" + __webpack_require__(322) + ") no-repeat;\n  background-size: cover;\n  font-size: 16px; }\n  .Login .form {\n    background: rgba(255, 255, 255, 0.2);\n    max-width: 400px;\n    margin: 100px auto;\n    padding: 10px; }\n  .Login .form-item {\n    margin-bottom: 15px; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 321 */
+/* 322 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "05c59e2903b7491b6bccb9277fdaee71.jpg";
 
 /***/ },
-/* 322 */
+/* 323 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6234,11 +6293,11 @@ webpackJsonp([0],[
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	var _editpost = __webpack_require__(323);
+	var _editpost = __webpack_require__(324);
 
 	var _editpost2 = _interopRequireDefault(_editpost);
 
-	__webpack_require__(324);
+	__webpack_require__(325);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6393,7 +6452,7 @@ webpackJsonp([0],[
 	exports.default = EditPost;
 
 /***/ },
-/* 323 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6402,7 +6461,7 @@ webpackJsonp([0],[
 	    value: true
 	});
 
-	var _reselect = __webpack_require__(305);
+	var _reselect = __webpack_require__(306);
 
 	var getNaturePost = function getNaturePost(state) {
 	    return state.editPost.naturePost;
@@ -6417,13 +6476,13 @@ webpackJsonp([0],[
 	});
 
 /***/ },
-/* 324 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(325);
+	var content = __webpack_require__(326);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(294)(content, {});
@@ -6443,7 +6502,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 325 */
+/* 326 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(293)();
@@ -6457,7 +6516,7 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 326 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6478,7 +6537,7 @@ webpackJsonp([0],[
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _showpost = __webpack_require__(327);
+	var _showpost = __webpack_require__(328);
 
 	var _showpost2 = _interopRequireDefault(_showpost);
 
@@ -6486,23 +6545,25 @@ webpackJsonp([0],[
 
 	var _connect2 = _interopRequireDefault(_connect);
 
-	__webpack_require__(328);
+	__webpack_require__(329);
 
-	var _banner = __webpack_require__(306);
+	var _banner = __webpack_require__(307);
 
 	var _banner2 = _interopRequireDefault(_banner);
 
-	var _Nav = __webpack_require__(311);
+	var _Nav = __webpack_require__(312);
 
 	var _Nav2 = _interopRequireDefault(_Nav);
 
-	var _fecha = __webpack_require__(307);
+	var _fecha = __webpack_require__(308);
 
 	var _fecha2 = _interopRequireDefault(_fecha);
 
-	var _RecentPost = __webpack_require__(330);
+	var _RecentPost = __webpack_require__(331);
 
 	var _RecentPost2 = _interopRequireDefault(_RecentPost);
+
+	var _constant = __webpack_require__(334);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6584,17 +6645,17 @@ webpackJsonp([0],[
 	                    { className: 'container flex-column ' },
 	                    _react2.default.createElement(
 	                        'div',
-	                        { className: 'col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-xs-12 post-container flex' },
+	                        { className: 'col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-xs-12 post-container flex' },
 	                        _react2.default.createElement(
 	                            'section',
 	                            null,
 	                            _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: singlePost.content } })
 	                        ),
-	                        _react2.default.createElement(_RecentPost2.default, { recentPost: recentPost })
+	                        (0, _constant.isDevice)() && _react2.default.createElement(_RecentPost2.default, { recentPost: recentPost })
 	                    ),
 	                    userComment.length ? _react2.default.createElement(
 	                        'section',
-	                        { className: 'col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-xs-12' },
+	                        { className: 'col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-xs-12' },
 	                        _react2.default.createElement(
 	                            'p',
 	                            null,
@@ -6628,7 +6689,7 @@ webpackJsonp([0],[
 	                    ) : null,
 	                    _react2.default.createElement(
 	                        'footer',
-	                        { className: 'ShowPost__Footer col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-1 col-xs-12' },
+	                        { className: 'ShowPost__Footer col-lg-7 col-lg-offset-1 col-md-7 col-md-offset-1 col-xs-12' },
 	                        '\u7528\u6237\u540D\uFF1A',
 	                        _react2.default.createElement(
 	                            'span',
@@ -6661,7 +6722,7 @@ webpackJsonp([0],[
 	exports.default = ShowPost;
 
 /***/ },
-/* 327 */
+/* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6670,7 +6731,7 @@ webpackJsonp([0],[
 	    value: true
 	});
 
-	var _reselect = __webpack_require__(305);
+	var _reselect = __webpack_require__(306);
 
 	var getSinglePost = function getSinglePost(state) {
 	    return state.showpost.singlePost;
@@ -6698,13 +6759,13 @@ webpackJsonp([0],[
 	});
 
 /***/ },
-/* 328 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(329);
+	var content = __webpack_require__(330);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(294)(content, {});
@@ -6724,7 +6785,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 329 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(293)();
@@ -6732,13 +6793,13 @@ webpackJsonp([0],[
 
 
 	// module
-	exports.push([module.id, ".ShowPost__Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(310) + ") no-repeat;\n  background-size: cover; }\n\n.ShowPost__Title {\n  margin-top: 20px; }\n  .ShowPost__Title__Text {\n    color: #fff; }\n\n.ShowPost textarea {\n  box-shadow: none;\n  -webkit-appearance: none;\n  overflow: auto;\n  padding: 10px;\n  height: 54px;\n  margin: 0;\n  resize: none;\n  color: #999;\n  width: 100%; }\n\n.ShowPost__Footer {\n  margin-bottom: 15px; }\n\n.ShowPost .post-container {\n  margin-top: 15px; }\n\n.ShowPost__Comment {\n  padding: 0;\n  list-style: none; }\n\n.ShowPost img {\n  width: 300px; }\n\n.ShowPost__Footer {\n  margin-top: 15px; }\n", ""]);
+	exports.push([module.id, ".ShowPost__Banner {\n  height: 300px;\n  width: 100%;\n  background: url(" + __webpack_require__(311) + ") no-repeat;\n  background-size: cover; }\n\n.ShowPost__Title {\n  margin-top: 20px; }\n  .ShowPost__Title__Text {\n    color: #fff; }\n\n.ShowPost textarea {\n  box-shadow: none;\n  -webkit-appearance: none;\n  overflow: auto;\n  padding: 10px;\n  height: 54px;\n  margin: 0;\n  resize: none;\n  color: #999;\n  width: 100%; }\n\n.ShowPost__Footer {\n  margin-bottom: 15px; }\n\n.ShowPost .post-container {\n  margin-top: 15px; }\n\n.ShowPost__Comment {\n  padding: 0;\n  list-style: none; }\n\n.ShowPost img {\n  width: 300px; }\n\n.ShowPost__Footer {\n  margin-top: 15px; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 330 */
+/* 331 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6753,7 +6814,7 @@ webpackJsonp([0],[
 
 	var _react2 = _interopRequireDefault(_react);
 
-	__webpack_require__(331);
+	__webpack_require__(332);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6762,7 +6823,7 @@ webpackJsonp([0],[
 
 	    return _react2.default.createElement(
 	        'section',
-	        { className: 'RecentPost col-md-4' },
+	        { className: 'RecentPost' },
 	        _react2.default.createElement(
 	            'p',
 	            { className: 'RecentPost__Title' },
@@ -6789,13 +6850,13 @@ webpackJsonp([0],[
 	    */
 
 /***/ },
-/* 331 */
+/* 332 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(332);
+	var content = __webpack_require__(333);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(294)(content, {});
@@ -6815,7 +6876,7 @@ webpackJsonp([0],[
 	}
 
 /***/ },
-/* 332 */
+/* 333 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(293)();
@@ -6827,6 +6888,126 @@ webpackJsonp([0],[
 
 	// exports
 
+
+/***/ },
+/* 334 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	/**
+	 * Created by shen on 2017/2/27.
+	 */
+
+	function isDevice() {
+	    var location = navigator.userAgent;
+
+	    return (/Andrond/.test(location)
+	    );
+	}
+
+	exports.isDevice = isDevice;
+
+/***/ },
+/* 335 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _dec, _class; /**
+	                   * Created by shen on 2017/2/28.
+	                   */
+
+
+	var _react = __webpack_require__(178);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _connect = __webpack_require__(296);
+
+	var _connect2 = _interopRequireDefault(_connect);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Live = (_dec = (0, _connect2.default)(), _dec(_class = function (_React$Component) {
+	    _inherits(Live, _React$Component);
+
+	    function Live() {
+	        var _ref;
+
+	        var _temp, _this, _ret;
+
+	        _classCallCheck(this, Live);
+
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	            args[_key] = arguments[_key];
+	        }
+
+	        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Live.__proto__ || Object.getPrototypeOf(Live)).call.apply(_ref, [this].concat(args))), _this), _this.handleFile = function () {
+	            var _this$refs = _this.refs,
+	                file = _this$refs.file,
+	                preImg = _this$refs.preImg,
+	                word = _this$refs.word;
+
+	            var oneWord = word.value;
+	            var fileList = file.files;
+	            for (var i = 0; i < fileList.length; i++) {
+	                var img = new Image();
+	                img.src = fileList[i].name;
+	                preImg.appendChild(img);
+	            }
+	            var formData = new FormData();
+	            formData.append('fileList', '123');
+	            console.log(formData.append('fileList', fileList));
+	            _this.props.actions.sendOneLive(formData);
+	        }, _temp), _possibleConstructorReturn(_this, _ret);
+	    }
+
+	    _createClass(Live, [{
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            return _react2.default.createElement(
+	                'div',
+	                { className: 'Live' },
+	                _react2.default.createElement('input', { type: 'file', multiple: 'multiple', ref: 'file', name: 'photos' }),
+	                _react2.default.createElement('input', { type: 'text', placeholder: '\u8BF4\u70B9\u4EC0\u4E48\u5427....', ref: 'word' }),
+	                _react2.default.createElement(
+	                    'section',
+	                    null,
+	                    _react2.default.createElement('div', { className: 'Live__PreImg', ref: 'preImg' })
+	                ),
+	                _react2.default.createElement(
+	                    'button',
+	                    { onClick: function onClick() {
+	                            return _this2.handleFile();
+	                        } },
+	                    '\u63D0\u4EA4'
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Live;
+	}(_react2.default.Component)) || _class);
+	exports.default = Live;
 
 /***/ }
 ]);

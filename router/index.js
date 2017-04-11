@@ -3,17 +3,18 @@
  */
 var express = require('express')
 var router = express.Router()
-var multer = require('multer'); // v1.0.5
-var upload = multer(); // for parsing multipart/form-data
+var multer = require('multer');
+var upload = multer({dist: './public/'}); // for parsing multipart/form-data
 var markdown = require('markdown').markdown
 var fecha = require('fecha')
+var fs = require('fs');
 
 
 
 var Website = require('../model/model')
 
-router.get('/', function (req, res) {
-
+router.get('/hello', function (req, res) {
+    res.send('hello')
 })
 
 router.get('/list', function (req, res) {
@@ -60,6 +61,7 @@ router.post('/login', function (req, res) {
         username: 'shen',
         password: 'shen'
     }
+    console.log('1', req.body)
     if(req.body.username === user.username && req.body.password === user.password) {
         req.session.user = user
         res.send({code: '200'})
@@ -119,7 +121,7 @@ router.get('/userComment', function (req, res) {
     })
 })
 
-router.post('/delete', upload.array(), function (req, res) {
+router.post('/delete', function (req, res) {
     Website.remove({_id: req.body._id}, function (err, doc) {
         if(err) return console.error(err)
         if(doc) {
@@ -155,6 +157,17 @@ router.get('/recentPost', function (req, res) {
     })
 })
 
+router.post('/file-upload', function (req, res) {
+    // for(var i = 0; i < file.length; i++) {
+    //     console.log('1')
+    //     fs.renameSync(file[i].path, '/public/'+file[i].originalname)
+    //     img = '/public/'+file[i].originalname
+    // }
+    // var path = req.files.photos.path
+    // res.json(path)
+    console.log(req.body)
+    res.send({code: '200'})
+})
 
 module.exports = router
 

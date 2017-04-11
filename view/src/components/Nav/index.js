@@ -18,6 +18,9 @@ export default ({isLogin, userLogout, goToLogin}) => {
                     <li className="pull-right">
                         <Link to={`/post?page=0`}>我的博客</Link>
                     </li>
+                    <li className="pull-right">
+                        <Link to={`/live`}>生活</Link>
+                    </li>
                 </ul>
             </div>
         </nav>

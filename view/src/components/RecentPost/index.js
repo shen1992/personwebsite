@@ -6,7 +6,7 @@ import React from 'react'
 import './recentPost.scss'
 export default ({recentPost}) => {
     return (
-        <section className="RecentPost col-md-4">
+        <section className="RecentPost">
             <p className="RecentPost__Title">最近文章</p>
             <ol>
                 {

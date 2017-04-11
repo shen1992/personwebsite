@@ -20,6 +20,7 @@ import Post from './post/post'
 import Login from './login/login'
 import EditPost from './editpost/editpost'
 import ShowPost from './showpost/showpost'
+import Live from './live/live'
 
 const routes = (history) => (
     <Router history={history}>
@@ -28,6 +29,7 @@ const routes = (history) => (
         <Route path='/login' component={Login} />
         <Route path='/editpost' component={EditPost} />
         <Route path='/showpost/:post_id' component={ShowPost} />
+        <Route path='/live' component={Live} />
         <Route path="*" component={Home} />
     </Router>
 )

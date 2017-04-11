@@ -2,7 +2,7 @@
  * Created by shen on 2017/1/30.
  */
 var mongoose = require('mongoose')
-mongoose.connect('mongodb://shen:lyg5518263@ds161049.mlab.com:61049/pesonwebsite')
+mongoose.connect('mongodb://127.0.0.1/PersonWebsite')
 
 const db = mongoose.connection
 db.on('error', console.error.bind(console, '连接错误'))
@@ -20,8 +20,6 @@ var PersonWebsite = mongoose.Schema({
     commentContent: String,
     commentTime: Number,
 })
-
-// PersonWebsite.index({postTime: -1})
 
 var Website = mongoose.model('website', PersonWebsite)
 

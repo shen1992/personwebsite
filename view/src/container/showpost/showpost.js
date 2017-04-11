@@ -9,6 +9,7 @@ import Banner from 'comp/banner/banner.js'
 import Nav from 'comp/Nav'
 import fecha from 'fecha'
 import RecentPost from 'comp/RecentPost'
+import {isDevice} from 'utils/constant'
 @connect(showPostSelect)
 
 export default class ShowPost extends React.Component {
@@ -60,12 +61,14 @@ export default class ShowPost extends React.Component {
                 <Nav isLogin={isLogin} />
                 <Banner title={singlePost.title} time={singlePost.postTime} />
                 <div className="container flex-column ">
-                    <div className="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-xs-12 post-container flex">
+                    <div className="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-xs-12 post-container flex">
                         <section><div dangerouslySetInnerHTML={{__html: singlePost.content}}></div></section>
-                        <RecentPost recentPost={recentPost} />
+                        {
+                            isDevice() && <RecentPost recentPost={recentPost} />
+                        }
                     </div>
                     {
-                        userComment.length ? <section className="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-xs-12">
+                        userComment.length ? <section className="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-xs-12">
                                 <p>用户评论</p>
                                 <ol className="ShowPost__Comment">
                                     {
@@ -82,7 +85,7 @@ export default class ShowPost extends React.Component {
                                 </ol>
                             </section> : null
                     }
-                    <footer className="ShowPost__Footer col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-1 col-xs-12">
+                    <footer className="ShowPost__Footer col-lg-7 col-lg-offset-1 col-md-7 col-md-offset-1 col-xs-12">
                         用户名：<span ref="commentName">游客</span>
                         <article>
                             评论内容:
