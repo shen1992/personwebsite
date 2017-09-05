@@ -2,7 +2,7 @@
  * Created by shen on 2017/1/30.
  */
 var mongoose = require('mongoose')
-mongoose.connect('mongodb://127.0.0.1/PersonWebsite')
+mongoose.connect('mongodb://localhost/PersonWebsite')
 
 const db = mongoose.connection
 db.on('error', console.error.bind(console, '连接错误'))

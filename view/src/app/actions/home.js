@@ -27,7 +27,7 @@ export function userLogout() {
             .then((resp) => {
                 dispatch({
                     type: types.IS_LOGOUT,
-                    isLogin: res.isLogin
+                    isLogin: resp.isLogin
                 })
             })
     }
